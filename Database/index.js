@@ -1,31 +1,30 @@
-const mongoose=require('mongoose')
-mongoose.connect('mongodb+srv://sachinchaurasiya69:606280Sk@tesing.8vhz1.mongodb.net/Course_selling_website',)
+const mongoose = require("mongoose");
+const { int, string } = require("zod");
+require("dotenv").config();
+const connectdb = async () => {
+  try {
+    await mongoose.connect(process.env.Databaseurl);
+    console.log("connected ");
+  } catch (error) {}
+};
+connectdb();
+const userSchema = new mongoose.Schema({
+  email: String,
+  firstName: String,
+  LastName: String,
+  password: String,
+  purchesedCourses: [String],
+});
 
-const adminSchema=new mongoose.Schema({
-    username:String,
-    password:String,
+const courseShema = new mongoose.Schema({
+  title: String,
+  description: String,
+  price: { type: Number, require: true },
+  category: String,
+  createdby: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  createdAt: { type: Date, default: Date.now() },
+});
 
-})
-
-const userSchema=new mongoose.Schema({
-    username:String,
-    password:String,
-    purchasedCourses:[{type:mongoose.Schema.Types.ObjectId,ref:'course'}]
-})
-
-const courseSchema=new mongoose.Schema({
-    title:String,
-    description:String,
-    price:String,
-
-})
-
-const Admin=mongoose.model('admin',adminSchema)
-const user=mongoose.model('user',userSchema)
-const course=mongoose.model('course',courseSchema)
-
-
-module.exports={
-    Admin,
-    user,
-    course}
+const user = mongoose.model("user", userSchema);
+const course= mongoose.model(course,"courseSchema")
+module.exports = { user , course};
