@@ -5,6 +5,8 @@ app.use(express.json());
 const bcrypt = require("bcrypt");
 const studentroute = require("./Routes/student");
 const adminroute= require("./Routes/admin")
+const cookieParser=require("cookie-parser")
+app.use(cookieParser())
 
 app.use("/student", studentroute);
 app.use("/admin",adminroute);

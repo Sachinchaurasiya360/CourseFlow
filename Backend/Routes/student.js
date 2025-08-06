@@ -16,7 +16,7 @@ router.post("/signup", async (req, res) => {
         error: result.error.flatten().fieldErrors,
       });
     }
-    const { email, firstName, lastName, password } = result.data;
+    const { email, firstName, lastName, password,role } = result.data;
 
     const existinguser = await user.findOne({ email });
     if (existinguser) {
@@ -31,6 +31,7 @@ router.post("/signup", async (req, res) => {
       firstName,
       lastName,
       password: hashedPassword,
+      role
     });
     return res.status(200).json({
       message: "user created succesfully",
@@ -52,8 +53,7 @@ router.post("/login", async (req, res) => {
         error: result.error.flatten().fieldErrors,
       });
     }
-    const { email, password } = result.data;
-
+    const { email, password,role } = result.data;
     const existinguser = await user.findOne({
       email,
     });
@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
       });
     }
     const token = await jwt.sign(
-      { userId: existinguser._id },
+      { userId: existinguser._id ,role:existinguser.role},
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
@@ -79,14 +79,14 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
       sameSite: "lax", //there are 3 types of it
       secure: process.env.NODE_ENV,
-      maxAge: 360000,
+      maxAge: 3600000,
     });
     return res.status(200).json({
       message: "User login succesfully",
       token,
       user: {
         id: existinguser._id,
-        email: existinguser.email,
+        role: existinguser.role,
       },
     });
   } catch (error) {

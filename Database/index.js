@@ -14,9 +14,10 @@ const userSchema = new mongoose.Schema({
   LastName: String,
   password: String,
   purchesedCourses: [String],
+  role: { type: string, enum: ["student", "admin"], default: "student" }
 });
 
-const courseShema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema({
   title: String,
   description: String,
   price: { type: Number, require: true },
@@ -26,5 +27,5 @@ const courseShema = new mongoose.Schema({
 });
 
 const user = mongoose.model("user", userSchema);
-const course= mongoose.model(course,"courseSchema")
-module.exports = { user , course};
+const course = mongoose.model("course", courseSchema);
+module.exports = { user, course };
