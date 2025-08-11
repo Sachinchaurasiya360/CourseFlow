@@ -19,6 +19,7 @@ router.post(
           message: "invalid Input",
           error: result.error.flatten().fieldErrors,
         });
+        
       }
       const { title, description, price, category } = result.data;
       const createcourse = await course.create({

@@ -7,9 +7,11 @@ const studentroute = require("./Routes/student");
 const adminroute= require("./Routes/admin")
 const cookieParser=require("cookie-parser")
 app.use(cookieParser())
+const publicroute=require('./Routes/public')
 
 app.use("/student", studentroute);
 app.use("/admin",adminroute);
+app.use('/public',publicroute)
 
 
 app.listen(port, () => {
