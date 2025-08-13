@@ -22,7 +22,7 @@ This project is a fully functional course selling website, developed from scratc
 
 1. **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clonehttps://github.com/Sachinchaurasiya360/Course-Selling-Website
     cd Course-Selling-Website
     ```
 2. **Install dependencies:**

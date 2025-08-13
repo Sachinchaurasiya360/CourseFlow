@@ -47,7 +47,7 @@ router.put("/updatecourse:id", isAuthenticated, isadmin, async (req, res) => {
     if (!result) {
       return res.status(400).json({
         message: "Invalid Input",
-        error: result.error.flatten().fieldErrors,
+         error: result.error.flatten().fieldErrors,
       });
     }
     const courseId = req.params.id;

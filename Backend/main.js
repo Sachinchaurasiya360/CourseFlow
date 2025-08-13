@@ -8,6 +8,11 @@ const adminroute= require("./Routes/admin")
 const cookieParser=require("cookie-parser")
 app.use(cookieParser())
 const publicroute=require('./Routes/public')
+const cors=require('cors')
+app.use(cors({ origin: "http://localhost:5173",
+  credentials:true
+ }));
+ app.use(express.json())
 
 app.use("/student", studentroute);
 app.use("/admin",adminroute);

@@ -1,12 +1,18 @@
 const express = require("express");
+const app = express();
 const router = express.Router();
 const { user } = require("../../Database/index");
 const { signupSchema, loginschema } = require("../../Common/zod/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
+app.use(cors({ origin: "http://localhost:5173",
+  credentials:true
+ }));
 
 //Insted of writing all the code here we can use MVC architechture for better modularity
 router.post("/signup", async (req, res) => {
+  console.log("url hit")
   try {
     const result = signupSchema.safeParse(req.body);
 
@@ -16,7 +22,7 @@ router.post("/signup", async (req, res) => {
         error: result.error.flatten().fieldErrors,
       });
     }
-    const { email, firstName, lastName, password,role } = result.data;
+    const { email, firstName, lastName, password, role } = result.data;
 
     const existinguser = await user.findOne({ email });
     if (existinguser) {
@@ -31,7 +37,7 @@ router.post("/signup", async (req, res) => {
       firstName,
       lastName,
       password: hashedPassword,
-      role
+      role,
     });
     return res.status(200).json({
       message: "user created succesfully",
@@ -53,7 +59,7 @@ router.post("/login", async (req, res) => {
         error: result.error.flatten().fieldErrors,
       });
     }
-    const { email, password,role } = result.data;
+    const { email, password, role } = result.data;
     const existinguser = await user.findOne({
       email,
     });
@@ -69,12 +75,13 @@ router.post("/login", async (req, res) => {
       });
     }
     const token = await jwt.sign(
-      { userId: existinguser._id ,role:existinguser.role},
+      { userId: existinguser._id, role: existinguser.role },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
+
     res.cookie("Cookies", token, {
       httpOnly: true,
       sameSite: "lax", //there are 3 types of it
@@ -96,5 +103,29 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+// router.post("/forgetPassword", async (req, res) => {
+//   try {
+//     const result = loginschema.safeParse(req.body);
+//     if (!result) {
+//       return res.status(400).json({
+//         message: "invalid password format",
+//       });
+//     }
+//     const searchindb= await user.findOne({email})
+//     console.log(searchindb)
+//     if(!searchindb){
+//       return res.status(400).json({
+//         message:"User doesn't exist in database"
+//       })
+//     }
+//     const updatepassword=await user.updateOne(searchindb.password,)
+//   }
+//   catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: "Internal server error",
+//     });
+//   }
+// });
 
 module.exports = router;
