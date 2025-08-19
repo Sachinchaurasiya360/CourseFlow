@@ -12,7 +12,6 @@ app.use(cors({ origin: "http://localhost:5173",
 
 //Insted of writing all the code here we can use MVC architechture for better modularity
 router.post("/signup", async (req, res) => {
-  console.log("url hit")
   try {
     const result = signupSchema.safeParse(req.body);
 

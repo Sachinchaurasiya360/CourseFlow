@@ -1,4 +1,5 @@
 import axios from "axios";
+import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -41,46 +42,49 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-primary flex justify-center items-center min-h-screen">
-      <form action="" onSubmit={handlesubmit}>
-        <div className="bg-primary1 shadow-2xl rounded-2xl p-4  min-w-90 min-h-100">
-          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+    <>
+      <Navbar />
+      <div className="bg-primary flex justify-center items-center min-h-screen">
+        <form action="" onSubmit={handlesubmit}>
+          <div className="bg-primary1 shadow-2xl rounded-2xl p-10 min-w-130 min-h-110">
+            {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
-          <h2 className=" text-2xl flex justify-center  pt-10 font-bold">
-            Login to your account
-          </h2>
-          <label className="block pt-6 font-semibold"> Email </label>
-          <input
-            type="text"
-            value={email}
-            placeholder="Enter your email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="border-1 rounded-md min-w-full mt-1 p-1 ml-2 mr-2"
-          />
-          <label className="block pt-3 font-semibold"> Password</label>
-          <input
-            type="password"
-            value={password}
-            placeholder="********"
-            onChange={(e) => setpassword(e.target.value)}
-            className="border-1 rounded-lg min-w-full mt-1 p-1 ml-2 mr-2"
-          />
-          <button
-            className="flex justify-center min-w-full bg-secondary p-1 mt-3 rounded-2xl min-h-full"
-            type="submit"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          <h3 className="flex justify-center mt-4">Forgot password ?</h3>
-          <h3 className=" flex justify-center mt-2">
-            Don't have an account?{" "}
-            <span className=" underline" onClick={() => navigate("/Signup")}>
-              Register now
-            </span>
-            {}
-          </h3>
-        </div>
-      </form>
-    </div>
+            <h2 className=" text-2xl flex justify-center  pt-10 font-bold">
+              Login to your account
+            </h2>
+            <label className="block pt-2 pb-2 font-semibold"> Email </label>
+            <input
+              type="text"
+              value={email}
+              placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+              className="border-1 rounded-md min-w-full mt-1 p-3 mr-2"
+            />
+            <label className="block pt-4 pb-2 font-semibold"> Password</label>
+            <input
+              type="password"
+              value={password}
+              placeholder="********"
+              onChange={(e) => setpassword(e.target.value)}
+              className="border-1 rounded-lg min-w-full mt-1 p-3 mr-2"
+            />
+            <button
+              className="flex justify-center min-w-full bg-secondary p-4 mt-7 rounded-2xl min-h-full"
+              type="submit"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+            <h3 className="flex justify-center mt-4">Forgot password ?</h3>
+            <h3 className=" flex justify-center mt-2">
+              Don't have an account?{" "}
+              <span className=" underline" onClick={() => navigate("/Signup")}>
+                Register now
+              </span>
+              {}
+            </h3>
+          </div>
+        </form>
+      </div>
+    </>
   );
 }
