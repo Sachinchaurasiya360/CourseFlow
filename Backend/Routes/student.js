@@ -4,11 +4,11 @@ const router = express.Router();
 const { user } = require("../../Database/index");
 const { signupSchema, loginschema } = require("../../Common/zod/index");
 const bcrypt = require("bcrypt");
+const isAuthenticated = require("../Middleware/isAutheticated");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-app.use(cors({ origin: "http://localhost:5173",
-  credentials:true
- }));
+app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 //Insted of writing all the code here we can use MVC architechture for better modularity
 router.post("/signup", async (req, res) => {
@@ -127,4 +127,17 @@ router.post("/login", async (req, res) => {
 //   }
 // });
 
+router.get("/me", isAuthenticated, async (req, res) => {
+  try {
+    const currentuser = await user.findById(req.user.id).select("-password");
+    return res.status(200).json({
+      message: currentuser,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.response?.data?.message,
+    });
+  }
+});
 module.exports = router;

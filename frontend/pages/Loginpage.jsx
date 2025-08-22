@@ -2,9 +2,11 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../src/context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,10 +21,10 @@ export default function Login() {
 
     try {
       setLoading(true);
-      seterror(" ");
+      seterror("");
+      console.log("Attempting login...");
       const response = await axios.post(
         "http://localhost:3000/student/login",
-        // `${import.meta.env.baseurl}/student/login`,
         {
           email,
           password,
@@ -30,15 +32,26 @@ export default function Login() {
         },
         { withCredentials: true }
       );
+      console.log("Login response:", response.data);
 
-      navigate("/dashboard");
+      if (response.data.user) {
+        setUser(response.data.user);
+        console.log("User set in context:", response.data.user);
+        navigate("/dashboard");
+      } else {
+        console.log("No user data in response");
+        seterror("Login successful but no user data received");
+      }
     } catch (error) {
-      if (error) {
-        seterror(error.response.data?.message);
-      } else seterror("Something went wrong try again leter");
-    } finally {
+      console.error("Login error:", error);
+      if (error.response?.data?.message) {
+        seterror(error.response.data.message);
+      } else {
+        seterror("Something went wrong try again later");
+      }
+    }finally {
       setLoading(false);
-    }
+  }
   };
 
   return (

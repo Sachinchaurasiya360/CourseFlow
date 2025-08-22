@@ -2,10 +2,18 @@ const express = require("express");
 const router = express.Router();
 const { courseSchema } = require("../../Common/zod/index");
 const { course } = require("../../Database/index");
-const IsAuthenticated = require("../Middleware/IsAutheticated");
+const IsAuthenticated = require("../Middleware/isAutheticated");
 const { isadmin } = require("../Middleware/isadmin");
-const isAuthenticated = require("../Middleware/IsAutheticated");
-
+const isAuthenticated = require("../Middleware/isAutheticated");
+const cors = require("cors");
+const app = express();
+app.use(express.json());
+app.use(
+  cors({
+    origin: "https://localhost/5173",
+    Credential: true,
+  })
+);
 //Add middleware
 router.post(
   "/createcourse",
@@ -19,7 +27,6 @@ router.post(
           message: "invalid Input",
           error: result.error.flatten().fieldErrors,
         });
-        
       }
       const { title, description, price, category } = result.data;
       const createcourse = await course.create({
@@ -27,6 +34,7 @@ router.post(
         description,
         price,
         category,
+        createdby: userId,
       });
       return res.status(200).json({
         message: "Course created successfully",
@@ -47,7 +55,7 @@ router.put("/updatecourse:id", isAuthenticated, isadmin, async (req, res) => {
     if (!result) {
       return res.status(400).json({
         message: "Invalid Input",
-         error: result.error.flatten().fieldErrors,
+        error: result.error.flatten().fieldErrors,
       });
     }
     const courseId = req.params.id;
@@ -70,40 +78,42 @@ router.put("/updatecourse:id", isAuthenticated, isadmin, async (req, res) => {
     });
   }
 });
-router.delete('/deletecourse:id',isAuthenticated,isadmin,async (req,res)=>{
-  try{
-    const courseId=req.params.id
-    const findCourse= await course.findByIdAndDelete(courseId)
-    if(!findCourse){
-      return res.status(400).json({
-        message:"course doesn't exist"
-      })
+router.delete(
+  "/deletecourse:id",
+  isAuthenticated,
+  isadmin,
+  async (req, res) => {
+    try {
+      const courseId = req.params.id;
+      const findCourse = await course.findByIdAndDelete(courseId);
+      if (!findCourse) {
+        return res.status(400).json({
+          message: "course doesn't exist",
+        });
+      }
+      return res.status(200).json({
+        message: "Couse deleted successfully",
+      });
+    } catch (error) {
+      console.error(Error);
+      res.status(500).json({
+        message: "Internal server error",
+      });
     }
-    return res.status(200).json({
-      message:"Couse deleted successfully"
-    })
-
-  }catch(error){
-    console.error(Error)
-    res.status(500).json({
-      message:"Internal server error"
-    })
   }
-})
-router.get('/allcourses',isAuthenticated,isadmin,async(req,res)=>{
-  try{
-    const allcourses=await course.find()
+);
+router.get("/allcourses", isAuthenticated, isadmin, async (req, res) => {
+  try {
+    const allcourses = await course.find();
     return res.status(200).json({
-      courses:allcourses
-    })
-
-  }catch(error){
-    console.error(error)
+      courses: allcourses,
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
-    message:"internal server error"
-
-    })
+      message: "internal server error",
+    });
   }
-})
+});
 
 module.exports = router;

@@ -20,13 +20,13 @@ export default function Navbar() {
       />
 
       <div className="flex justify-around space-x-4">
-        <button className=" block bg-secondary p-1 pl-3 pr-3 rounded-xl text-l font-semibold hover:bg-transparent  text-gray-50"
+        <button className=" block bg-secondary p-2 pl-3 pr-3 rounded-xl text-l font-semibold hover:bg-transparent  text-gray-50"
         onClick={()=>{
           navigate('/login')
         }}>
           Login
         </button>
-        <button className="flex mr-2 p-1 pl-3 pr-3 rounded-xl bg-third text-l  font-semibold hover:bg-transparent" 
+        <button className="flex mr-2 p-2 pl-3 pr-3 rounded-xl bg-third text-l  font-semibold hover:bg-transparent" 
         onClick={()=>{
           navigate('/signup')
         }}>

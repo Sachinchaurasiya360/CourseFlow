@@ -22,7 +22,7 @@ const courseSchema = new mongoose.Schema({
   description: String,
   price: { type: Number, require: true },
   category: String,
-  createdby: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  createdby: { type: mongoose.Schema.Types.ObjectId, ref: "user",require },
   createdAt: { type: Date, default: Date.now() },
 });
 
