@@ -14,6 +14,8 @@ app.use(cors({ origin: "http://localhost:5173",
  }));
  app.use(express.json())
 
+
+
 app.use("/student", studentroute);
 app.use("/admin",adminroute);
 app.use('/public',publicroute)

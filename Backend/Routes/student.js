@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
         error: result.error.flatten().fieldErrors,
       });
     }
-    const { email, password, role } = result.data;
+    const { email, password } = result.data;
     const existinguser = await user.findOne({
       email,
     });

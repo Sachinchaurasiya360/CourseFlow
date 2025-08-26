@@ -4,13 +4,24 @@ import { useState, useEffect, useContext, createContext } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
-export function AuthProvider({children}) {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
-    useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
+      // Get current path
+      const currentPath = window.location.pathname;
+      
+      // List of public routes that don't need authentication
+      const publicRoutes = ['/', '/login', '/signup'];
+      
+      // Skip authentication check for public routes
+      if (publicRoutes.includes(currentPath)) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get("http://localhost:3000/student/me", {
           withCredentials: true,
@@ -25,14 +36,11 @@ export function AuthProvider({children}) {
 
     fetchUser();
   }, []);
-       
 
   return (
-    
-      <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
-    
   );
 }
 

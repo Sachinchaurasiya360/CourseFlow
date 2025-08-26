@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../src/context/AuthContext";
+import { user } from "../../Database";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function Login() {
   const [error, seterror] = useState("");
 
   const handlesubmit = async (e) => {
+    console.log("hello1");
     e.preventDefault();
     if (!email || !password) {
       seterror("Email and password is required");
@@ -28,18 +30,27 @@ export default function Login() {
         {
           email,
           password,
-          role: "student",
         },
         { withCredentials: true }
       );
-      console.log("Login response:", response.data);
+      console.log("working")
 
-      if (response.data.user) {
+
+      console.log("Login response:", response.data?.user.role);
+
+      // Set user in context
+      console.log("user role is", response.data.user.role);
+
+      if (response?.data?.user) {
         setUser(response.data.user);
-        console.log("User set in context:", response.data.user);
-        navigate("/dashboard");
+
+        // Navigate based on role
+        if (response.data.user.role === "admin") {
+          navigate("/admindashboard");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
-        console.log("No user data in response");
         seterror("Login successful but no user data received");
       }
     } catch (error) {
@@ -49,9 +60,9 @@ export default function Login() {
       } else {
         seterror("Something went wrong try again later");
       }
-    }finally {
+    } finally {
       setLoading(false);
-  }
+    }
   };
 
   return (
@@ -84,6 +95,7 @@ export default function Login() {
             <button
               className="flex justify-center min-w-full bg-secondary p-4 mt-7 rounded-2xl min-h-full"
               type="submit"
+              disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -93,7 +105,6 @@ export default function Login() {
               <span className=" underline" onClick={() => navigate("/Signup")}>
                 Register now
               </span>
-              {}
             </h3>
           </div>
         </form>
