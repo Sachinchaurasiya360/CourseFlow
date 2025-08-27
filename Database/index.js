@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { lowercase, trim } = require("zod");
 require("dotenv").config();
 const connectdb = async () => {
   try {
@@ -17,9 +16,26 @@ const userSchema = new mongoose.Schema(
     purchesedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "course" }],
     role: { type: String, enum: ["student", "admin"], default: "student" },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
-
+const courseContentSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  videourl: String,
+  progressStatus: { type: Number, default: 0 },
+  isPreview: {
+    type: Boolean,
+    default: false,
+  },
+});
+const weekSchema = new mongoose.Schema({
+  weekNumber: {
+    type: Number,
+    required: true,
+  },
+  title: String,
+  lesson: [courseContentSchema],
+});
 const courseSchema = new mongoose.Schema(
   {
     title: String,
@@ -32,11 +48,12 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     thumbnail: String,
-    createdAt: { type: Date, default: Date.now() },
+    Weeks: [weekSchema],
   },
   { timestamps: true }
 );
 
 const user = mongoose.model("user", userSchema);
 const course = mongoose.model("course", courseSchema);
+
 module.exports = { user, course };

@@ -17,6 +17,8 @@ app.use(
     Credential: true,
   })
 );
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 const uploadToCloudnary = async (buffer, folder) => {
   try {
     return new Promise((resolve, reject) => {
@@ -41,9 +43,6 @@ const uploadToCloudnary = async (buffer, folder) => {
     throw error;
   }
 };
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
 router.post(
   "/createcourse",
   upload.single("thumbnail"),
@@ -123,7 +122,6 @@ router.post(
     }
   }
 );
-
 //we can implement the pagination and soft/hard delete
 router.put("/updatecourse:id", isAuthenticated, isadmin, async (req, res) => {
   try {

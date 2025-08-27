@@ -10,12 +10,11 @@ import LandingPage from "../pages/LandingPage";
 function App() {
   return (
     <BrowserRouter>
-            <AuthProvider>
-
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/admindashboard"
             element={
@@ -33,9 +32,8 @@ function App() {
             }
           />
           <Route path="/addcourses" element={<AdminAddCourses />} />
-      </Routes>
-              </AuthProvider>
-
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

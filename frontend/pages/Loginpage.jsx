@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../src/context/AuthContext";
-import { user } from "../../Database";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,32 +25,22 @@ export default function Login() {
       seterror("");
       console.log("Attempting login...");
       const response = await axios.post(
-        "http://localhost:3000/student/login",
+        "http://localhost:3000/login",
         {
           email,
           password,
         },
         { withCredentials: true }
       );
-      console.log("working")
-
-
-      console.log("Login response:", response.data?.user.role);
-
-      // Set user in context
-      console.log("user role is", response.data.user.role);
 
       if (response?.data?.user) {
         setUser(response.data.user);
 
-        // Navigate based on role
         if (response.data.user.role === "admin") {
           navigate("/admindashboard");
         } else {
           navigate("/dashboard");
         }
-      } else {
-        seterror("Login successful but no user data received");
       }
     } catch (error) {
       console.error("Login error:", error);
