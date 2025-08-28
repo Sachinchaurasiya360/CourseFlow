@@ -4,9 +4,28 @@ import Buttons from "../components/Buttons";
 import Card from "../components/Card";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [courses, setCourse] = useState([]);
+  useEffect(() => {
+    const fetchcourses = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/admin/allcourses",
+          {
+            withCredentials: true,
+          }
+        );
+        return setCourse(response.data.courses);
+      } catch (error) {
+        console.error("internal error found", error);
+      }
+    };
+    fetchcourses();
+  }, []);
   return (
     <>
       <Navbar />
@@ -62,12 +81,34 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>hello</td>
-                <td>hello</td>
-                <td>hello</td>
-                <td>hello</td>
-              </tr>
+              
+              {courses.length > 0 ? (
+                courses.map((course) => (
+                  <tr key={course._id}>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {course.title}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {course.category}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {course.price}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {course.description}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="text-center border border-gray-300 py-4"
+                  >
+                    No courses available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

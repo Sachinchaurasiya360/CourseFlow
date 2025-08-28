@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const course = require("../../Database/index");
+const {course} = require("../../Database/index");
 router.get("/course", async (req, res) => {
   try {
-    const result = await course.find();
+    console.log(" public course hit")
+    const result = await course.find().limit(5);
     if (!result) {
       return res.status(400).json({
         message: "There is no course in database",

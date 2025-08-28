@@ -2,7 +2,6 @@ import Navbar from "../components/Navbar";
 import AdminSidebar from "../components/AdminSidebar";
 import axios from "axios";
 import { useState } from "react";
-import { number } from "zod";
 
 export default function AdminAddcourses() {
   const [title, setTitle] = useState("");
@@ -14,7 +13,6 @@ export default function AdminAddcourses() {
   const [Error, setError] = useState("");
 
   const handlesubmit = async (e) => {
-    console.log("button hit");
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -24,10 +22,10 @@ export default function AdminAddcourses() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("price", Number(price)); // Convert to number
+      formData.append("price", Number(price)); 
       formData.append("category", Category);
 
-      // Append the file
+      
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
       }
