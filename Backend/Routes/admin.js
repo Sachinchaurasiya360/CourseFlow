@@ -9,7 +9,7 @@ const cloudinary = require("../../cloudnaryConfig");
 const cors = require("cors");
 const app = express();
 const multer = require("multer");
-const { number } = require("zod");
+const { number, success } = require("zod");
 app.use(express.json());
 app.use(
   cors({
@@ -84,8 +84,6 @@ router.post(
           "thumbnail"
         );
         console.log("Cloudinary response:", uploadresult);
-
-        
 
         thumbnailUrl = uploadresult.secure_url;
       } catch (error) {
@@ -186,8 +184,91 @@ router.get("/allcourses", isAuthenticated, isadmin, async (req, res) => {
     console.error(error);
     return res.status(500).json({
       message: "internal server error",
+      message: error.message,
     });
   }
 });
+
+router.post(
+  "/createweek/:CourseId/weeks",
+  isAuthenticated,
+  isadmin,
+  async (req, res) => {
+    try {
+      const CourseId = req.params.CourseId;
+      const { weekNumber, title } = req.body;
+
+      const CourseDoc = await course.findById(getCourseId);
+      if (!CourseDoc) {
+        throw new Error("Course not found");
+      }
+
+      const IsWeekExist = await CourseDoc.Weeks.some(
+        (w) => w.weekNumber === weekNumber
+      );
+      if (IsWeekExist)
+        throw new Error(`${weeks} already exist create another week`);
+
+      CourseDoc.Weeks.push({ weekNumber, title });
+      await CourseDoc.save();
+      return res.status(200).json({
+        success: true,
+        data: course,
+        message: "Course created succesful",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
+
+router.post(
+  "/addlessontoweek/:courseId/week/:weekNumber/lesson",
+  isAuthenticated,
+  isadmin,
+  async (req, res) => {
+    console.log("add lesson hit");
+    try {
+      const { courseId, weekNumber } = req.params;
+
+      const { title, description, videourl } = req.body;
+
+      const getCourseId = await course.findById(courseId); //Course is a model and now i have created a instance of it in getCourseId so now onward i have to use getCourseId for nay opperation
+      console.log(getCourseId);
+      if (!getCourseId) {
+        return res.status(404).json({
+          message: "Course not found",
+          success: false,
+        });
+      }
+
+      const week = getCourseId.Weeks.find(
+        (w) => w.weekNumber == Number(weekNumber)
+      );
+      if (!week) {
+        return res.status(404).json({
+          message: "Week does not exist",
+          success: false,
+        });
+      }
+      week.lesson.push({ title, description, videourl });
+      await getCourseId.save();
+      return res.status(200).json({
+        message: "Lesson create succsesfully ",
+        success: false,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Internal server error",
+        message: error.message,
+      });
+    }
+
+    //courseId,week,and the lesson data
+  }
+);
 
 module.exports = router;

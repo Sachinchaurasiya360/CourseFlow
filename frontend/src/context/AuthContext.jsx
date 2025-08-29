@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       const currentPath = window.location.pathname;
       
       // List of public routes that don't need authentication
-      const publicRoutes = ['/', '/login', '/signup'];
+      const publicRoutes = ['/', '/login', '/signup','/aboutus'];
       
       // Skip authentication check for public routes
       if (publicRoutes.includes(currentPath)) {

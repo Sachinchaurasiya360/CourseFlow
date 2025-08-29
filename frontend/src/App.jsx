@@ -7,6 +7,7 @@ import AdminAddCourses from "../pages/AdminAddCourses";
 import ProtectedRoute from "./context/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "../pages/LandingPage";
+import AboutUs from "../pages/AboutUs";
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +33,9 @@ function App() {
             }
           />
           <Route path="/addcourses" element={<AdminAddCourses />} />
+          <Route
+          path="/aboutus"
+          element={<AboutUs/>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
