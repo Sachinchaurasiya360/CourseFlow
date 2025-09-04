@@ -50,7 +50,6 @@ router.post(
   isadmin,
   async (req, res, next) => {
     try {
-      console.log("from the", req.body);
 
       // Parse price as number before validation
       const courseData = {
@@ -83,7 +82,6 @@ router.post(
           req.file.buffer,
           "thumbnail"
         );
-        console.log("Cloudinary response:", uploadresult);
 
         thumbnailUrl = uploadresult.secure_url;
       } catch (error) {
@@ -99,12 +97,13 @@ router.post(
         "and thumbnail:",
         thumbnailUrl
       );
-      const { title, description, price, category } = result.data;
+      const { title, description, price, category,coursehighlight } = result.data;
       const createcourse = await course.create({
         title,
         description,
         price,
         category,
+        coursehighlight,
         createdby: req.user,
         thumbnail: thumbnailUrl,
       });
@@ -270,5 +269,22 @@ router.post(
     //courseId,week,and the lesson data
   }
 );
-
+router.get("/getsinglecourse/:courseId", async (req, res) => {
+  console.log("working")
+  try {
+    const { courseId } = req.params;
+    console.log(courseId)
+    const coursedetails = await course.findById(courseId).populate("createdby","firstName");;
+    if (!coursedetails) {
+      return res.status(404).json({
+        message: "Course not found",
+      });
+    }
+    return res.status(200).json({
+      coursedetails,
+      success: true,
+      message: "Course found",
+    });
+  } catch (error) {}
+});
 module.exports = router;

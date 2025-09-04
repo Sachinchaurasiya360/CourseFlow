@@ -24,7 +24,7 @@ export default function Navbar() {
 
       <div className="flex justify-around space-x-10 ml-30">
         <button
-          className=" block bg-secondary p-2 pl-6 pr-6 rounded-xl text-l font-semibold hover:bg-transparent  text-gray-50 focus:ring"
+          className=" block bg-secondary p-2 pl-6 pr-6 rounded-xl text-l font-semibold hover:text-gray-50 cursor-pointer"
           onClick={() => {
             navigate("/login");
           }}
@@ -32,7 +32,7 @@ export default function Navbar() {
           Login
         </button>
         <button
-          className="flex mr-2 p-2 pl-6 pr-6 rounded-xl bg-third text-l  font-semibold hover:bg-transparent"
+          className="flex mr-2 p-2 pl-6 pr-6 rounded-xl bg-third text-l  font-semibold hover:cursor-pointer "
           onClick={() => {
             navigate("/signup");
           }}

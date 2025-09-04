@@ -8,9 +8,8 @@ const signupSchema = z.object({
 });
 const loginschema = z.object({
   email: z.string().email(),
-  password: z.string()
+  password: z.string(),
 });
-
 
 const userSchema = z.object({
   email: z.string(),
@@ -23,6 +22,7 @@ const courseSchema = z.object({
   title: z.string().min(5),
   description: z.string(),
   price: z.number(),
+  coursehighlight: z.array(z.string()).optional(),
   category: z.string().optional(),
   createdby: z.string().optional(),
   createdAt: z.string().optional(),

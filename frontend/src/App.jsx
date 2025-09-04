@@ -8,12 +8,15 @@ import ProtectedRoute from "./context/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "../pages/LandingPage";
 import AboutUs from "../pages/AboutUs";
+import AboutCourses from "../pages/AboutCourses";
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/aboutcourses/:courseId" element={<AboutCourses />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
@@ -33,9 +36,7 @@ function App() {
             }
           />
           <Route path="/addcourses" element={<AdminAddCourses />} />
-          <Route
-          path="/aboutus"
-          element={<AboutUs/>}/>
+          <Route path="/aboutus:" element={<AboutUs />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

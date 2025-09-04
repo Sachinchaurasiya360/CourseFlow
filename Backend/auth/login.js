@@ -38,7 +38,7 @@ const loginroute= async (req, res) => {
       { userId: existinguser._id, role: existinguser.role },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "5h",
       }
     );
 
@@ -46,7 +46,7 @@ const loginroute= async (req, res) => {
       httpOnly: true,
       sameSite: "lax", //there are 3 types of it
       secure: process.env.NODE_ENV,
-      maxAge: 3600000,
+      maxAge: 360000000,
     });
     return res.status(200).json({
       message: "User login succesfully",

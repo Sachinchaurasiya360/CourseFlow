@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { array } = require("zod");
 require("dotenv").config();
 const connectdb = async () => {
   try {
@@ -48,6 +49,10 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     thumbnail: String,
+    coursehighlight:{
+        type:[String],
+        default:[]
+    },
     Weeks: [weekSchema],
   },
   { timestamps: true }
