@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
-const { array } = require("zod");
 require("dotenv").config();
 const connectdb = async () => {
   try {
     await mongoose.connect(process.env.Databaseurl);
-    console.log("connected ");
-  } catch (error) {}
+    console.log("Database has been connected");
+  } catch (error) {
+    console.log(error);
+  }
 };
+
 connectdb();
+
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -49,9 +52,9 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     thumbnail: String,
-    coursehighlight:{
-        type:[String],
-        default:[]
+    coursehighlight: {
+      type: [String],
+      default: [],
     },
     Weeks: [weekSchema],
   },

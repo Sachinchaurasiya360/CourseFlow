@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {course} = require("../../Database/index");
+
+
 router.get("/course", async (req, res) => {
   try {
-    console.log(" public course hit")
     const result = await course.find().limit(4);
     if (!result) {
       return res.status(400).json({
@@ -21,22 +22,6 @@ router.get("/course", async (req, res) => {
   }
 });
 
-router.get("/course:id", async (req, res) => {
-  try {
-    const courseId = req.params.id;
-    const findCourse = await course.findById(courseId)
-    if (!findCourse) {
-      return res.status(400).json({
-        messsage: "Internal server error",
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(400).json({
-      message: "Internal server error",
-    });
-  }
-});
 //Implementing pagination in the mongodb
 router.get("/search", async (req, res) => {
   try {
@@ -73,4 +58,8 @@ router.get("/search", async (req, res) => {
     });
   }
 });
+
+
+
+
 module.exports = router;

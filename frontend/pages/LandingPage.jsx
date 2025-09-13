@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import Buttons from "../components/Buttons";
-import { useNavigate } from "react-router-dom";
 import {
   Figma,
   Activity,
@@ -13,8 +12,9 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CardForLandingPage from "../components/CardForLandingPage";
+
+
 export default function LandingPage() {
-  const navigate = useNavigate();
   const [CourseForLandingPage, setCourseForLandingPage] = useState([]);
   useEffect(() => {
     const getcourses = async () => {
@@ -31,8 +31,6 @@ export default function LandingPage() {
     getcourses();
   }, []);
   console.log(CourseForLandingPage);
-  const img =
-    "https://res.cloudinary.com/demo/image/upload/v1724682090/sample.jpg";
 
   return (
     <div>
@@ -53,7 +51,7 @@ export default function LandingPage() {
         </div>
 
         <h2 className="mt-6 ml-6 text-3xl font-semibold"> Featured Courses</h2>
-        <div className="w-full grid grid-cols-4">
+        <div className="w-ful grid grid-cols-4">
           {CourseForLandingPage.length > 0 ? (
             CourseForLandingPage.map((courses) => (
               <div
@@ -62,7 +60,7 @@ export default function LandingPage() {
               >
                 <img
                   src={courses.thumbnail}
-                  alt=""
+                  alt="thumbnail not found"
                   className="p-3 rounded-3xl h-60 w-full"
                 />
                 <h1 className="text-xl font-semibold p-3">{courses.title}</h1>
@@ -73,12 +71,7 @@ export default function LandingPage() {
                   ₹{courses.price} only
                 </h2>
 
-                <button
-                  onClick={() => {
-                    navigate(`/aboutcourses/${courses._id}`);
-                  }}
-                  className="w-66 bg-secondary p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50 text-center mx-2"
-                >
+                <button className="w-66 bg-secondary p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50 text-center mx-2">
                   Enroll Now
                 </button>
               </div>
@@ -91,7 +84,7 @@ export default function LandingPage() {
         <h2 className="mt-6 ml-6 font-semibold text-3xl mb-3">
           Explore Categories
         </h2>
-        <div className="px-10 grid grid-cols-5 gap-6 mt-10">
+        <div className="px-10 grid grid-cols-5 gap-6">
           <CardForLandingPage
             logo={<Figma className="w-10 h-10 text-secondary" />}
             content={"Design"}
@@ -128,7 +121,7 @@ export default function LandingPage() {
         What Our Students Say
       </h1>
 
-      <div className="mx-10 grid grid-cols-4  ">
+      <div className="mx-10 grid grid-cols-4 mt-6  ">
         <div className=" h-60 w-60 bg-primary rounded-2xl mb-8">
           <p className="pt-4 px-4">
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam

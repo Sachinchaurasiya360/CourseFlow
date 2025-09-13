@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import AdminSidebar from "../components/AdminSidebar";
 import Buttons from "../components/Buttons";
 import Card from "../components/Card";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -29,15 +29,12 @@ export default function AdminDashboard() {
   return (
     <>
       <Navbar />
-
       <div className="flex">
         <AdminSidebar className=" flex max-w-40" />
-
         <div className="flex-1">
           <h1 className="text-3xl m-4 font-bold ml-3  block">
             Admin Dashboard
           </h1>
-
           <div className=" flex mt-15 space-x-20 ml-5">
             <Card
               title={"Active user"}
@@ -45,7 +42,6 @@ export default function AdminDashboard() {
               figures={2485}
               className=" mt-10 "
             />
-
             <Card
               title={"Total Sales"}
               description={"Sales in the current month"}

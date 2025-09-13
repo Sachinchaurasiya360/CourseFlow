@@ -16,7 +16,7 @@ This project is a fully functional course selling website, developed from scratc
 - **Validation:** Zod
 - **Email:** Nodemailer
 - **Storage:** AWS S3
-- **CDN:** AWS CloudFront (or similar)
+-
 
 ## Getting Started
 
