@@ -239,4 +239,11 @@ const getSingleCourse = async (req, res) => {
   } catch (error) {}
 };
 
-module.exports = { createcourse };
+const createCoupan = async (req, res) => {
+  const courseId = req.params.courseId;
+  const { coupanNo, discountedPrice } = req.body;
+  const getCourseDetails=await course.findById(courseId)
+  
+};
+module.exports = { createcourse, createCoupan };
+ 

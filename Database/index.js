@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { string, boolean } = require("zod");
 require("dotenv").config();
 const connectdb = async () => {
   try {
@@ -60,8 +61,36 @@ const courseSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+const coupanSchema = new mongoose.Schema(
+  {
+    coupanCode: { require: true, type: String, unique: true, trim: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: user },
+    Comment: String,
+    discountValue: Number,
+    MaxUsages: Number,
+    UsedCount: Number,
+    isActive: Boolean,
+    expiresAt: Date,
+  },
+  { timestamps: true }
+);
+const blogSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    require: true,
+  },
+  content: { type: String, require: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: user },
+  coverImage: {
+    require: false,
+    url: String,
+  },
+  published: false,
+  publishedAt: Date.now(),
+});
 
 const user = mongoose.model("user", userSchema);
 const course = mongoose.model("course", courseSchema);
+const blog = mongoose.model("blog", blogSchema);
 
-module.exports = { user, course };
+module.exports = { user, course, blog };
