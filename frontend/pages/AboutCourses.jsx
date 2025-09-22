@@ -19,7 +19,7 @@ export default function AboutCourses() {
       }
     };
     getdetails();
-  }, []);
+  },);
   console.log("The response got it ", course);
 
   return (

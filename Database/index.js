@@ -3,7 +3,7 @@ const { String } = require("mongoose/lib/schema/index");
 require("dotenv").config();
 const connectdb = async () => {
   try {
-    await mongoose.connect(process.env.Databaseurl);
+    await mongoose.connect(process.env.DATABASE_URL);
     console.log("Database has been connected");
   } catch (error) {
     console.log(error);

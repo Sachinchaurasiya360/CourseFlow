@@ -20,7 +20,7 @@ export default function LandingPage() {
     const getcourses = async () => {
       try {
         const getfivecourses = await axios.get(
-          "http://localhost:3000/public/course"
+          "courseflow-production-1123.up.railway.app/api/v1/course/getcourse"
         );
 
         return setCourseForLandingPage(getfivecourses?.data?.courses);

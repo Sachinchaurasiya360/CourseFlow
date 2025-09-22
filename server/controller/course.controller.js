@@ -245,5 +245,5 @@ const createCoupan = async (req, res) => {
   const getCourseDetails=await course.findById(courseId)
   
 };
-module.exports = { createcourse, createCoupan };
+module.exports = { createcourse, createCoupan,getAllCourse };
  
