@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { string, boolean } = require("zod");
+const { String } = require("mongoose/lib/schema/index");
 require("dotenv").config();
 const connectdb = async () => {
   try {
@@ -9,7 +9,6 @@ const connectdb = async () => {
     console.log(error);
   }
 };
-
 connectdb();
 
 const userSchema = new mongoose.Schema(
@@ -64,7 +63,7 @@ const courseSchema = new mongoose.Schema(
 const coupanSchema = new mongoose.Schema(
   {
     coupanCode: { require: true, type: String, unique: true, trim: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: user },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     Comment: String,
     discountValue: Number,
     MaxUsages: Number,
@@ -80,17 +79,33 @@ const blogSchema = new mongoose.Schema({
     require: true,
   },
   content: { type: String, require: true },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: user },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   coverImage: {
     require: false,
-    url: String,
+    type: String,
   },
-  published: false,
-  publishedAt: Date.now(),
+  published: Boolean,
+  publishedAt: String,
 });
+const otpSchema = new mongoose.Schema(
+  {
+    identifier: String,
+    expireAt: Date,
+    verifed: { type: Boolean, default: false },
+    otp:String
+  },
+  {
+    timestamps: true,
+  }
+);
+
+//using TTL(time to live) it will autometically delete the doc after 5 min
+otpSchema.index({expireAt:1},{expireAfterSeconds:0})
 
 const user = mongoose.model("user", userSchema);
 const course = mongoose.model("course", courseSchema);
 const blog = mongoose.model("blog", blogSchema);
+const coupan = mongoose.model("coupan", coupanSchema);
+const otp = mongoose.model("otp", otpSchema);
 
-module.exports = { user, course, blog };
+module.exports = { user, course, blog, coupan, otp };

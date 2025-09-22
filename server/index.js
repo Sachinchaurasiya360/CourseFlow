@@ -3,7 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const authRoute = require("./Routes/auth");
 const course= require("./Routes/course")
-const course= require("./Routes/course")
+const blog=require("./Routes/blog")
 
 app.use(express.json());
 const cookieParser = require("cookie-parser");

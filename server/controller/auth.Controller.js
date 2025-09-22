@@ -1,16 +1,17 @@
 const express = require("express");
 const app = express();
 const { user } = require("../../Database/index");
-const { loginschema,signupSchema } = require("../../utils/zodTypes/index");
+const { loginschema, signupSchema } = require("../../utils/zodTypes/index");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
-const jwt=require('jsonwebtoken');
-const sendEmail=require("../../utils/config/sendEmail")
+const jwt = require("jsonwebtoken");
+const { sendEmail } = require("../../utils/config/sendEmail");
+const { GenerateOtp } = require("../../utils/config/otpGenerator");
+const { otp } = require("../../Database/index");
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-
- const loginroute= async (req, res) => {
+const loginroute = async (req, res) => {
   try {
     const result = loginschema.safeParse(req.body);
     if (!result.success) {
@@ -63,7 +64,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
     });
   }
 };
- const signuproute= async (req, res) => {
+const signuproute = async (req, res) => {
   try {
     const result = signupSchema.safeParse(req.body);
 
@@ -100,32 +101,85 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
     });
   }
 };
-const forgetPassword=async(req,res)=>{
-  const {email}=req.body
-  const isEmailExist=await user.findOne(email)
-  if(!isEmailExist){
+
+const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    const isEmailExist = await user.findOne({ email }).select("-password");
+    if (!isEmailExist) {
+      return res.status(500).json({
+        success: false,
+        message: "Email doesn't exist",
+      });
+    }
+    const userName = isEmailExist.firstName;
+    const subject = "CourseFlow: Password reset request";
+    const SentOtp = GenerateOtp();
+    const to = isEmailExist.email;
+    const body = `Dear ${userName} we have received your password reset request. Your Otp is ${SentOtp}
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2>🔐 Verify your account</h2>
+        <p>Use the following One Time Password (OTP) to complete your verification:</p>
+        <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #4CAF50;">
+          ${otp}
+        </div>
+        <p>This OTP will expire in <b>5 minutes</b>. If you didn’t request this, you can ignore this email.</p>
+        <br>
+        <p>– Team CourseFlow 🚀</p>
+      </div>
+    
+    
+    `;
+    const sendEmailForForgetPass = await sendEmail(to, subject, body);
+
+    const hashedOtp = await bcrypt.hash(SentOtp, salt); //better to generate salt
+
+    const savingOtpInDb = await otp.create({
+      identifier: to,
+      expireAt: new Date(Date.now() + 5 * 60 * 1000),
+      Otp: hashedOtp,
+      verifed: false,
+    });
+
+    return res.status(200).json({
+      message: "Otp sent to your email ",
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
-      success:false,
-      message:"Email doesn't exist"
-    })
-
+      message: "internal server error",
+    });
   }
+};
 
-  
-  
-}
+const verifyForgotPassword = async (req, res) => {
+  try {
+    const { identifier, otp } = req.body;
+    const OtpDoc = await otp.findOne({ identifier }).sort({ createdAt: -1 });
+    const verifyingOtp = await bcrypt.compare(otp, OtpDoc.otp);
+    if (!verifyingOtp) {
+      return res.status(404).json({
+        message: "You have enter wrong otp",
+      });
+    }
+    //make the status false
+  } catch (error) {
+    console.error();
+  }
+};
 
-// router.get("/me", isAuthenticated, async (req, res) => {
-//   try {
-//     const currentuser = await user.findById(req.user.id).select("-password");
-//     return res.status(200).json({
-//       message: currentuser,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({
-//       message: error.response?.data?.message,
-//     });
-//   }
-// });
-module.exports= {loginroute,signuproute,forgetPassword}
+const whoAmI = async (req, res) => {
+  try {
+    const currentuser = await user.findById(req.user.id).select("-password");
+    return res.status(200).json({
+      message: currentuser,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.response?.data?.message,
+    });
+  }
+};
+module.exports = { loginroute, signuproute, forgetPassword };

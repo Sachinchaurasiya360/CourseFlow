@@ -17,22 +17,13 @@ dotenv.config();
 
     const sendingEmail = await transporter.sendMail({
       from: "CourseFlow",
-      to: `${to}`,
-      subject: `${subject}`,
-      text: `${body}`,
+      to: to,
+      subject: subject,
+      text: body ,
     });
 
-    console.log("Message sent: %s", sendingEmail.messageId);
   } catch (error) {
     console.error(error);
   }
 };
-
-sendEmail(
-  "mrsachinchaurasiya@gmail.com",
-  "test",
-  "testisoooooooooooooooosngggg"
-);
-
-
 module.exports={sendEmail}

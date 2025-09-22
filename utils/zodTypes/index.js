@@ -11,13 +11,6 @@ const loginschema = z.object({
   password: z.string(),
 });
 
-const userSchema = z.object({
-  email: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  password: z.string().min(6),
-  contactNo: z.number(),
-});
 const courseSchema = z.object({
   title: z.string().min(5),
   description: z.string(),
