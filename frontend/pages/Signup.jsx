@@ -18,20 +18,22 @@ export default function Signup() {
     setError("");
     setLoading(true);
 
-    try {
-      const res = await axios.post("http://localhost:3000/signup", {
-        email,
-        firstName,
-        lastName,
-        password,
-        role,
-      });
-      navigate("/login");
-    } catch (error) {
-      setError(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   const res = await axios.post(`${process.env.baseurl}`, {
+    //     email,
+    //     firstName,
+    //     lastName,
+    //     password,
+    //     role,
+    //   });
+    //   setTimeout(() => {
+    //     navigate("/login");
+    //   }, 2000);
+    // } catch (error) {
+    //   setError(error.response?.data?.message || "Something went wrong");
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -101,10 +103,7 @@ export default function Signup() {
             </button>
             <h3 className="flex justify-center mt-3">
               Already have an account?
-              <span className="underline hover:cursor-pointer">
-             
-                Login Now
-              </span>
+              <span className="underline hover:cursor-pointer">Login Now</span>
             </h3>
           </div>
         </form>

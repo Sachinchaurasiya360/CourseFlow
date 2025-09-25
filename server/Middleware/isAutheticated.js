@@ -17,6 +17,7 @@ const isAuthenticated = async (req, res, next) => {
         message: "user does not exist",
       });
     }
+    
     req.user = verifiedUser;
     next();
   } catch (error) {

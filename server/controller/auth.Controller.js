@@ -127,14 +127,9 @@ const forgetPassword = async (req, res) => {
         <p>This OTP will expire in <b>5 minutes</b>. If you didn’t request this, you can ignore this email.</p>
         <br>
         <p>– Team CourseFlow 🚀</p>
-      </div>
-    
-    
-    `;
+      </div>`;
     const sendEmailForForgetPass = await sendEmail(to, subject, body);
-
     const hashedOtp = await bcrypt.hash(SentOtp, salt); //better to generate salt
-
     const savingOtpInDb = await otp.create({
       identifier: to,
       expireAt: new Date(Date.now() + 5 * 60 * 1000),
@@ -182,4 +177,10 @@ const whoAmI = async (req, res) => {
     });
   }
 };
-module.exports = { loginroute, signuproute, forgetPassword };
+module.exports = {
+  loginroute,
+  signuproute,
+  forgetPassword,
+  whoAmI,
+  verifyForgotPassword,
+};

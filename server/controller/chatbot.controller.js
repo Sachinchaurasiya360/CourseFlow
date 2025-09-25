@@ -2,7 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 const dotenv = require("dotenv");
 dotenv.config();
 const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
-const Aimodel = async (question) => {
+const chatbot = async (question) => {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -16,4 +16,4 @@ const Aimodel = async (question) => {
   }
 };
 
-Aimodel("Who is the prime minister of india ");
+module.exports={chatbot}

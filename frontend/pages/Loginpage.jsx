@@ -25,7 +25,7 @@ export default function Login() {
       seterror("");
       console.log("Attempting login...");
       const response = await axios.post(
-        "http://localhost:3000/login",
+        "courseflow.up.railway.app/api/v1/auth/login",
         {
           email,
           password,

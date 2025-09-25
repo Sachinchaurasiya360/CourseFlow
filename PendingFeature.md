@@ -5,7 +5,6 @@
 * `POST /auth/refresh` → Refresh access token.
 * `POST /auth/logout` → Logout & invalidate refresh token.
 * `POST /auth/forgot-password` → Send reset link/email.
-* `POST /auth/reset-password` → Reset password with token.
 * `GET /auth/me` → Get current user profile (JWT required).
 
 ---

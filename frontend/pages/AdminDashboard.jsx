@@ -3,7 +3,7 @@ import AdminSidebar from "../components/AdminSidebar";
 import Buttons from "../components/Buttons";
 import Card from "../components/Card";
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -14,7 +14,7 @@ export default function AdminDashboard() {
     const fetchcourses = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/admin/allcourses",
+          "courseflow.up.railway.app/api/v1/course/getcourse",
           {
             withCredentials: true,
           }

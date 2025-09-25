@@ -8,13 +8,13 @@ const createBlog = async (req, res) => {
       content,
       author,
       coverImage,
-      published = false,
+      published,
       publishedAt,
     } = req.body;
 
     //using senitize html libary to prevent the xss attack
     const cleancontent = sanitizeHtml(content, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([img, h1, h2]),
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
 
       allowedAttributes: {
         a: ["href", "name", "target", "rel"],
@@ -30,7 +30,7 @@ const createBlog = async (req, res) => {
       publishedAt: Date.now(),
     });
 
-    await blog.populate("author", "name");
+    await blog.populate("author");
 
     return res.status(201).json({
       message: "blog created",

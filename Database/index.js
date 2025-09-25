@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { String } = require("mongoose/lib/schema/index");
 require("dotenv").config();
 const connectdb = async () => {
   try {
@@ -60,9 +59,10 @@ const courseSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 const coupanSchema = new mongoose.Schema(
   {
-    coupanCode: { require: true, type: String, unique: true, trim: true },
+    coupanCode: { required: true, type: String, unique: true, trim: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     Comment: String,
     discountValue: Number,
@@ -76,7 +76,7 @@ const coupanSchema = new mongoose.Schema(
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
-    require: true,
+    required: true,
   },
   content: { type: String, require: true },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "user" },

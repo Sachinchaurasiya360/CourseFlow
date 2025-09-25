@@ -11,7 +11,7 @@ export default function AboutCourses() {
     const getdetails = async () => {
       try {
         const gettingCourseDetails = await axios.get(
-          `http://localhost:3000/admin/getsinglecourse/${courseId}`
+          `https://courseflow.up.railway.app/api/v1/course/getsinglecourse/${courseId}`
         );
         setCourse(gettingCourseDetails?.data?.coursedetails);
       } catch (error) {
@@ -55,7 +55,7 @@ export default function AboutCourses() {
           </div>
         </div>
       </div>
-      <div className="mx-6 mt-10">
+      {/* <div className="mx-6 mt-10">
         <h1 className=" text-2xl font-bold mt-6 ml-6">What you will Learn</h1>
         {course?.coursehighlight.map[0]((highlight,index) => {
           <div className="grid grid-cols-2 mx-6 gap-6 mt-4" key={index}>
@@ -64,7 +64,7 @@ export default function AboutCourses() {
             </h1>
           </div>;
         })}
-      </div>
+      </div> */}
       <div className="mt-6 mx-6 ">
         <h1 className="font-bold text-2xl  ml-6 ">Curriculum</h1>
         <div></div>

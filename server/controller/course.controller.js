@@ -10,6 +10,7 @@ const app = express();
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
 app.use(express.json());
 app.use(
   cors({
@@ -245,5 +246,5 @@ const createCoupan = async (req, res) => {
   const getCourseDetails=await course.findById(courseId)
   
 };
-module.exports = { createcourse, createCoupan,getAllCourse };
+module.exports = { createcourse, createCoupan,getAllCourse,getSingleCourse };
  
