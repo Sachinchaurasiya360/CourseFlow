@@ -36,7 +36,7 @@ function App() {
             }
           />
           <Route path="/addcourses" element={<AdminAddCourses />} />
-          <Route path="/aboutus:" element={<AboutUs />} />
+          <Route path="/aboutus" element={<AboutUs />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

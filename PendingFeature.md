@@ -2,26 +2,20 @@
 
 ### **1. Auth & User Management**
 
-* `POST /auth/refresh` → Refresh access token.
 * `POST /auth/logout` → Logout & invalidate refresh token.
-* `POST /auth/forgot-password` → Send reset link/email.
 * `GET /auth/me` → Get current user profile (JWT required).
 
 ---
 
 ### **2. Course Management (Admin only)**
 
-* `PUT /courses/:id` → Update course details.
-* `DELETE /courses/:id` → Delete course.
-* `POST /courses/:id/videos` → Upload/add videos (YouTube/S3).
-* `POST /courses/:id/blogs` → Attach blogs/resources.
+
 
 ---
 
 ### **3. Course Browsing (Students)**
 
 
-* `GET /courses/:id/content` → Fetch lessons, videos (only if enrolled).
 
 ---
 

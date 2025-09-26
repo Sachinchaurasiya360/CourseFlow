@@ -7,7 +7,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../../utils/config/sendEmail");
 const { GenerateOtp } = require("../../utils/config/otpGenerator");
-const { otp } = require("../../Database/index");
+const { otpschema } = require("../../Database/index");
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
@@ -64,6 +64,7 @@ const loginroute = async (req, res) => {
     });
   }
 };
+
 const signuproute = async (req, res) => {
   try {
     const result = signupSchema.safeParse(req.body);
@@ -105,38 +106,43 @@ const signuproute = async (req, res) => {
 const forgetPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    console.log(email);
-    const isEmailExist = await user.findOne({ email }).select("-password");
+    const isEmailExist = await user
+      .findOne({ email })
+      .select("firstName email");
     if (!isEmailExist) {
-      return res.status(500).json({
+      return res.status(404).json({
         success: false,
         message: "Email doesn't exist",
       });
     }
-    const userName = isEmailExist.firstName;
+    const userName = isEmailExist.firstName || "user";
     const subject = "CourseFlow: Password reset request";
     const SentOtp = GenerateOtp();
     const to = isEmailExist.email;
-    const body = `Dear ${userName} we have received your password reset request. Your Otp is ${SentOtp}
-    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-        <h2>🔐 Verify your account</h2>
-        <p>Use the following One Time Password (OTP) to complete your verification:</p>
-        <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #4CAF50;">
-          ${otp}
-        </div>
-        <p>This OTP will expire in <b>5 minutes</b>. If you didn’t request this, you can ignore this email.</p>
-        <br>
-        <p>– Team CourseFlow 🚀</p>
-      </div>`;
+    const body = `
+           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+    <h2>🔐 Password Reset Request</h2>
+    <p>Dear ${userName},</p>
+    <p>We have received your password reset request. Please use the following One Time Password (OTP) to complete your verification:</p>
+    
+    <div style="font-size: 28px; font-weight: bold; margin: 20px 0; color: #4CAF50; text-align: center;">
+      ${SentOtp}
+    </div>
+    <p>This OTP will expire in <b>5 minutes</b>. If you didn’t request this, you can safely ignore this email.</p>
+    
+    <br>
+    <p>– Team <b>CourseFlow 🚀</b></p>
+           </div>
+      `;
+
     const sendEmailForForgetPass = await sendEmail(to, subject, body);
-    const hashedOtp = await bcrypt.hash(SentOtp, salt); //better to generate salt
-    const savingOtpInDb = await otp.create({
+    const hashedOtp = await bcrypt.hash(SentOtp.toString(), 12); //better to generate salt
+    const savingOtpInDb = await otpschema.create({
       identifier: to,
-      expireAt: new Date(Date.now() + 5 * 60 * 1000),
-      Otp: hashedOtp,
+      expireAt: new Date(Date.now() + 15 * 60 * 1000),
+      otp: hashedOtp,
       verifed: false,
     });
-
     return res.status(200).json({
       message: "Otp sent to your email ",
     });
@@ -148,39 +154,80 @@ const forgetPassword = async (req, res) => {
   }
 };
 
-const verifyForgotPassword = async (req, res) => {
+const verifyingSentOtp = async (req, res) => {
   try {
     const { identifier, otp } = req.body;
-    const OtpDoc = await otp.findOne({ identifier }).sort({ createdAt: -1 });
+    const OtpDoc = await otpschema.findOne({ identifier });
+    if (!OtpDoc) {
+      return res.status(404).json({
+        message: "OTP not found or expired",
+      });
+    }
+    if (OtpDoc.expireAt < Date.now()) {
+      return res.status(400).json({
+        message: "Otp has been expired",
+      });
+    }
+
     const verifyingOtp = await bcrypt.compare(otp, OtpDoc.otp);
     if (!verifyingOtp) {
       return res.status(404).json({
         message: "You have enter wrong otp",
       });
     }
-    //make the status false
-  } catch (error) {
-    console.error();
-  }
-};
 
-const whoAmI = async (req, res) => {
-  try {
-    const currentuser = await user.findById(req.user.id).select("-password");
+    verifyingOtp.verifed = true;
+    await OtpDoc.save();
     return res.status(200).json({
-      message: currentuser,
+      message: "OTP verified successfully",
+      success: true,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: error.response?.data?.message,
+      message: "Internal server error",
+      success: false,
     });
   }
 };
+const resetPassword = async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
+    if (!identifier || password) {
+      return res.status(404).json({
+        message: "email and password are required",
+      });
+    }
+    const checkingOtpVerifed = await OtpDoc.findOne({ identifier }).select(
+      "verifed _id"
+    );
+    if (!checkingOtpVerifed || checkingOtpVerifed.verifed) {
+      return res.status(400).json({
+        message: "Otp is not verifed",
+      });
+    }
+    const hasingPassword = await bcrypt.hash(password, 12);
+    const updatingPassword = await user.updateOne(
+      { email },
+      { $set: { password: hasingPassword } }
+    );
+    await otpschema.deleteOne({ _id: checkingOtpVerifed });
+    return res.status(200).json({
+      message: "Password updated",
+    });
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+
 module.exports = {
   loginroute,
   signuproute,
   forgetPassword,
-  whoAmI,
-  verifyForgotPassword,
+  verifyingSentOtp,
+  resetPassword
 };

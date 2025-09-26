@@ -12,7 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CardForLandingPage from "../components/CardForLandingPage";
-
+import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function LandingPage() {
   const [CourseForLandingPage, setCourseForLandingPage] = useState([]);
@@ -20,7 +21,7 @@ export default function LandingPage() {
     const getcourses = async () => {
       try {
         const getfivecourses = await axios.get(
-          "https://courseflow.up.railway.app/api/v1/course/getcourse"
+          ` ${BASE_URL}/api/v1/course/getcourse`
         );
 
         return setCourseForLandingPage(getfivecourses?.data?.courses);
@@ -30,7 +31,11 @@ export default function LandingPage() {
     };
     getcourses();
   }, []);
-  console.log(CourseForLandingPage);
+  const navigate = useNavigate();
+
+  function redirectToCourseDetail(courseId) {
+    navigate(`/aboutcourses/${courseId}`);
+  }
 
   return (
     <div>
@@ -71,7 +76,10 @@ export default function LandingPage() {
                   ₹{courses.price} only
                 </h2>
 
-                <button className="w-66 bg-secondary p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50 text-center mx-2">
+                <button
+                  className="w-66 bg-secondary p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50 text-center mx-2 hover:cursor-pointer"
+                  onClick={()=> redirectToCourseDetail(courses._id)}
+                >
                   Enroll Now
                 </button>
               </div>

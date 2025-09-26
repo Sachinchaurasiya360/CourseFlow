@@ -11,9 +11,8 @@ export default function Login() {
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, seterror] = useState("");
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const handlesubmit = async (e) => {
-    console.log("hello1");
     e.preventDefault();
     if (!email || !password) {
       seterror("Email and password is required");
@@ -23,9 +22,8 @@ export default function Login() {
     try {
       setLoading(true);
       seterror("");
-      console.log("Attempting login...");
       const response = await axios.post(
-        "courseflow.up.railway.app/api/v1/auth/login",
+        `${BASE_URL}/api/v1/auth/login`,
         {
           email,
           password,
@@ -59,21 +57,33 @@ export default function Login() {
       <Navbar />
       <div className="bg-primary flex justify-center items-center min-h-screen">
         <form action="" onSubmit={handlesubmit}>
-          <div className="bg-primary1 shadow-2xl rounded-2xl p-10 min-w-130 min-h-110">
+          <div className="bg-primary1 shadow-2xl rounded-2xl p-10 min-w-110 min-h-110">
             {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
-            <h2 className=" text-2xl flex justify-center  pt-10 font-bold">
-              Login to your account
+            <h2 className=" text-3xl flex justify-center font-bold">
+              Welcome Back{" "}
             </h2>
-            <label className="block pt-2 pb-2 font-semibold"> Email </label>
+            <p className="flex justify-center content-center pt-2 text-gray-700">
+              Login to continue your learning journey
+            </p>
+            <label className="block pt-2 pb- font-semibold">
+              {" "}
+              Email Address{" "}
+            </label>
             <input
               type="text"
               value={email}
               placeholder="Enter your email"
               onChange={(e) => setEmail(e.target.value)}
-              className="border-1 rounded-md min-w-full mt-1 p-3 mr-2"
+              className="border-1 rounded-lg min-w-full mt-1 p-3 mr-2"
             />
-            <label className="block pt-4 pb-2 font-semibold"> Password</label>
+            <div className="flex justify-between">
+              <label className="block pt-4 font-semibold "> Password</label>
+              <label className="block pt-4 text-secondary font-semibold hover:cursor-pointer ">
+                Forgot password?
+              </label>
+            </div>
+
             <input
               type="password"
               value={password}
@@ -90,9 +100,12 @@ export default function Login() {
             </button>
             <h3 className="flex justify-center mt-4">Forgot password ?</h3>
             <h3 className=" flex justify-center mt-2">
-              Don't have an account?{" "}
-              <span className=" underline" onClick={() => navigate("/Signup")}>
-                Register now
+              Don't have an account? {" "}
+              <span
+                className="hover:cursor-pointer text-secondary"
+                onClick={() => navigate("/Signup")}
+              >
+              Register now
               </span>
             </h3>
           </div>

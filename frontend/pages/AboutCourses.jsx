@@ -3,6 +3,7 @@ import Buttons from "../components/Buttons";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function AboutCourses() {
   const { courseId } = useParams();
@@ -11,7 +12,7 @@ export default function AboutCourses() {
     const getdetails = async () => {
       try {
         const gettingCourseDetails = await axios.get(
-          `https://courseflow.up.railway.app/api/v1/course/getsinglecourse/${courseId}`
+          `${BASE_URL}/api/v1/course/getsinglecourse/${courseId}`
         );
         setCourse(gettingCourseDetails?.data?.coursedetails);
       } catch (error) {
@@ -19,8 +20,8 @@ export default function AboutCourses() {
       }
     };
     getdetails();
-  },);
-  console.log("The response got it ", course);
+  },[courseId]);
+  console.log(course)
 
   return (
     <div>
@@ -55,16 +56,16 @@ export default function AboutCourses() {
           </div>
         </div>
       </div>
-      {/* <div className="mx-6 mt-10">
+      <div className="mx-6 mt-10">
         <h1 className=" text-2xl font-bold mt-6 ml-6">What you will Learn</h1>
-        {course?.coursehighlight.map[0]((highlight,index) => {
+        
+        {course?.coursehighlight?.map((highlight, index) => {
           <div className="grid grid-cols-2 mx-6 gap-6 mt-4" key={index}>
-            <h1>
-              {highlight}
-            </h1>
+            <h1>{highlight}</h1>
           </div>;
         })}
-      </div> */}
+
+      </div>
       <div className="mt-6 mx-6 ">
         <h1 className="font-bold text-2xl  ml-6 ">Curriculum</h1>
         <div></div>

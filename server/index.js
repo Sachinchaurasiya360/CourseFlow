@@ -3,7 +3,6 @@ const app = express();
 const dotenv = require("dotenv");
 const authRoute = require("./Routes/auth");
 const course = require("./Routes/course");
-const blog = require("./Routes/blog");
 
 app.use(express.json());
 const cookieParser = require("cookie-parser");
@@ -28,7 +27,7 @@ app.get("/", (req, res) => {
 //Redirecting the user
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/course", course);
-app.use("/api/v1/blog", blog);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

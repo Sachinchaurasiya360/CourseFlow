@@ -15,15 +15,14 @@ This project is a fully functional course selling website, developed from scratc
 - **Frontend:** React
 - **Validation:** Zod
 - **Email:** Nodemailer
-- **Storage:** AWS S3
--
+
 
 ## Getting Started
 
 1. **Clone the repository:**
     ```bash
-    git clonehttps://github.com/Sachinchaurasiya360/Course-Selling-Website
-    cd Course-Selling-Website
+    git clonehttps://github.com/Sachinchaurasiya360/CourseFlow
+    cd CourseFlow
     ```
 2. **Install dependencies:**
     ```bash
@@ -47,7 +46,7 @@ This project is intended for educational use only.
 
 **Created by:**  
 Sachin Chaurasiya  
-mrsachinchaurasiya@gmail.com
+[Email Me](mrsachinchaurasiya@gmail.com)
 
 
 

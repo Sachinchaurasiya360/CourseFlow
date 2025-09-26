@@ -1,15 +1,10 @@
 const express = require("express");
-const router = express.Router();
 const { courseSchema } = require("../../utils/zodTypes/index");
-const { course } = require("../../Database/index");
-const IsAuthenticated = require("../Middleware/isAutheticated");
-const { isadmin } = require("../Middleware/isadmin");
-const isAuthenticated = require("../Middleware/isAutheticated");
+const { course, coupan } = require("../../Database/index");
 const cors = require("cors");
 const app = express();
 const multer = require("multer");
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 app.use(express.json());
 app.use(
@@ -220,10 +215,8 @@ const addLessonInWeek = async (req, res) => {
 
 //Get single course data
 const getSingleCourse = async (req, res) => {
-  console.log("working");
   try {
     const { courseId } = req.params;
-    console.log(courseId);
     const coursedetails = await course
       .findById(courseId)
       .populate("createdby", "firstName");
@@ -237,14 +230,35 @@ const getSingleCourse = async (req, res) => {
       success: true,
       message: "Course found",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 };
 
 const createCoupan = async (req, res) => {
   const courseId = req.params.courseId;
-  const { coupanNo, discountedPrice } = req.body;
-  const getCourseDetails=await course.findById(courseId)
-  
+  const { coupanCode, discountedPrice, TotalUsage } = req.body;
+  const creatingCoupan = await coupan.create({
+    coupanCode,
+    discountedPrice,
+    TotalUsage,
+  });
+  return res.status(200).json({
+    message: "Coupan Created Successful ",
+  });
 };
-module.exports = { createcourse, createCoupan,getAllCourse,getSingleCourse };
- 
+
+module.exports = {
+  createcourse,
+  createCoupan,
+  getAllCourse,
+  getSingleCourse,
+  updatecourse,
+  deleteCourse,
+  createWeek,
+  addLessonInWeek,
+};

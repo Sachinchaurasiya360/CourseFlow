@@ -19,7 +19,7 @@ dotenv.config();
       from: "CourseFlow",
       to: to,
       subject: subject,
-      text: body ,
+      html: body ,
     });
 
   } catch (error) {

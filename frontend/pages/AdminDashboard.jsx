@@ -14,8 +14,7 @@ export default function AdminDashboard() {
     const fetchcourses = async () => {
       try {
         const response = await axios.get(
-          "courseflow.up.railway.app/api/v1/course/getcourse",
-          {
+          "https://courseflow.up.railway.app/api/v1/course/getcourse",          {
             withCredentials: true,
           }
         );
