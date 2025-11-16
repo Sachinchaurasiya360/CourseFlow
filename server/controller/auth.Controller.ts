@@ -1,17 +1,27 @@
-const express = require("express");
-const app = express();
-const { user } = require("../../Database/index");
-const { loginschema, signupSchema } = require("../../utils/zodTypes/index");
-const bcrypt = require("bcrypt");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const { sendEmail } = require("../../utils/config/sendEmail");
-const { GenerateOtp } = require("../../utils/config/otpGenerator");
-const { otpschema } = require("../../Database/index");
-app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+import { Request, Response } from "express";
+import { user } from "../Database/index";
+import { loginschema, signupSchema } from "../../utils/zodTypes/index";
+import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
+import  {sendEmail}  from "../../utils/config/sendEmail";
+import { GenerateOtp } from "../../utils/config/otpGenerator";
+import { otpschema } from "../Database/index";
+import {
+  TypedRequest,
+  LoginRequestBody,
+  SignupRequestBody,
+  ForgetPasswordRequestBody,
+  VerifyOtpRequestBody,
+  ResetPasswordRequestBody,
+  JWTPayload,
+  IUser,
+  IOtp,
+} from "../types/index";
 
-const loginroute = async (req, res) => {
+export const loginroute = async (
+  req: TypedRequest<LoginRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const result = loginschema.safeParse(req.body);
     if (!result.success) {
@@ -21,39 +31,51 @@ const loginroute = async (req, res) => {
       });
     }
     const { email, password } = result.data;
-    const existinguser = await user.findOne({
+    const existinguser = (await user.findOne({
       email,
-    });
+    })) as IUser | null;
+
     if (!existinguser) {
       return res.status(404).json({
         message: "User does not exist in database",
       });
     }
+
     const ispassword = await bcrypt.compare(password, existinguser.password);
     if (!ispassword) {
       return res.status(400).json({
-        message: "You have entered wrong passwrod",
+        message: "You have entered wrong password",
       });
     }
-    const token = await jwt.sign(
-      { userId: existinguser._id, role: existinguser.role },
-      process.env.JWT_SECRET,
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET is not defined in environment variables");
+    }
+
+    const token = jwt.sign(
       {
-        expiresIn: "5h",
+        userId: existinguser._id.toString(),
+        role: existinguser.role,
+      } as JWTPayload,
+      jwtSecret,
+      {
+        expiresIn: "12h",
       }
     );
 
     res.cookie("Cookies", token, {
       httpOnly: true,
-      sameSite: "lax", //there are 3 types of it
-      secure: process.env.NODE_ENV,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 360000000,
     });
+
     return res.status(200).json({
-      message: "User login succesfully",
+      message: "User login successfully",
       token,
       user: {
-        id: existinguser._id,
+        id: existinguser._id.toString(),
         role: existinguser.role,
       },
     });
@@ -65,10 +87,14 @@ const loginroute = async (req, res) => {
   }
 };
 
-const signuproute = async (req, res) => {
+export const signuproute = async (
+  req: TypedRequest<SignupRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
+    console.log("hello")
     const result = signupSchema.safeParse(req.body);
-
+    console.log(result);
     if (!result.success) {
       return res.status(400).json({
         message: "You have sent invalid input",
@@ -93,28 +119,33 @@ const signuproute = async (req, res) => {
       role,
     });
     return res.status(200).json({
-      message: "user created succesfully",
+      message: "user created successfully",
     });
   } catch (error) {
     console.error("Signup Error", error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server errr",
     });
   }
 };
 
-const forgetPassword = async (req, res) => {
+export const forgetPassword = async (
+  req: TypedRequest<ForgetPasswordRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { email } = req.body;
-    const isEmailExist = await user
+    const isEmailExist = (await user
       .findOne({ email })
-      .select("firstName email");
+      .select("firstName email")) as IUser | null;
+
     if (!isEmailExist) {
       return res.status(404).json({
         success: false,
         message: "Email doesn't exist",
       });
     }
+
     const userName = isEmailExist.firstName || "user";
     const subject = "CourseFlow: Password reset request";
     const SentOtp = GenerateOtp();
@@ -128,23 +159,24 @@ const forgetPassword = async (req, res) => {
     <div style="font-size: 28px; font-weight: bold; margin: 20px 0; color: #4CAF50; text-align: center;">
       ${SentOtp}
     </div>
-    <p>This OTP will expire in <b>5 minutes</b>. If you didn’t request this, you can safely ignore this email.</p>
+    <p>This OTP will expire in <b>5 minutes</b>. If you didn't request this, you can safely ignore this email.</p>
     
     <br>
     <p>– Team <b>CourseFlow 🚀</b></p>
            </div>
       `;
 
-    const sendEmailForForgetPass = await sendEmail(to, subject, body);
-    const hashedOtp = await bcrypt.hash(SentOtp.toString(), 12); //better to generate salt
-    const savingOtpInDb = await otpschema.create({
+    await sendEmail({to, subject, body});
+    const hashedOtp = await bcrypt.hash(SentOtp.toString(), 12);
+    await otpschema.create({
       identifier: to,
       expireAt: new Date(Date.now() + 15 * 60 * 1000),
       otp: hashedOtp,
-      verifed: false,
+      verified: false,
     });
+
     return res.status(200).json({
-      message: "Otp sent to your email ",
+      message: "Otp sent to your email",
     });
   } catch (error) {
     console.error(error);
@@ -154,16 +186,21 @@ const forgetPassword = async (req, res) => {
   }
 };
 
-const verifyingSentOtp = async (req, res) => {
+export const verifyingSentOtp = async (
+  req: TypedRequest<VerifyOtpRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { identifier, otp } = req.body;
-    const OtpDoc = await otpschema.findOne({ identifier });
+    const OtpDoc = (await otpschema.findOne({ identifier })) as IOtp | null;
+
     if (!OtpDoc) {
       return res.status(404).json({
         message: "OTP not found or expired",
       });
     }
-    if (OtpDoc.expireAt < Date.now()) {
+
+    if (OtpDoc.expireAt < new Date()) {
       return res.status(400).json({
         message: "Otp has been expired",
       });
@@ -172,12 +209,13 @@ const verifyingSentOtp = async (req, res) => {
     const verifyingOtp = await bcrypt.compare(otp, OtpDoc.otp);
     if (!verifyingOtp) {
       return res.status(404).json({
-        message: "You have enter wrong otp",
+        message: "You have entered wrong otp",
       });
     }
 
-    verifyingOtp.verifed = true;
+    OtpDoc.verified = true;
     await OtpDoc.save();
+
     return res.status(200).json({
       message: "OTP verified successfully",
       success: true,
@@ -190,44 +228,45 @@ const verifyingSentOtp = async (req, res) => {
     });
   }
 };
-const resetPassword = async (req, res) => {
+
+export const resetPassword = async (
+  req: TypedRequest<ResetPasswordRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { identifier, password } = req.body;
-    if (!identifier || password) {
-      return res.status(404).json({
+
+    if (!identifier || !password) {
+      return res.status(400).json({
         message: "email and password are required",
       });
     }
-    const checkingOtpVerifed = await OtpDoc.findOne({ identifier }).select(
-      "verifed _id"
-    );
-    if (!checkingOtpVerifed || checkingOtpVerifed.verifed) {
+
+    const checkingOtpVerified = (await otpschema
+      .findOne({ identifier })
+      .select("verified _id")) as IOtp | null;
+
+    if (!checkingOtpVerified || !checkingOtpVerified.verified) {
       return res.status(400).json({
-        message: "Otp is not verifed",
+        message: "Otp is not verified",
       });
     }
-    const hasingPassword = await bcrypt.hash(password, 12);
-    const updatingPassword = await user.updateOne(
-      { email },
-      { $set: { password: hasingPassword } }
+
+    const hashingPassword = await bcrypt.hash(password, 12);
+    await user.updateOne(
+      { email: identifier },
+      { $set: { password: hashingPassword } }
     );
-    await otpschema.deleteOne({ _id: checkingOtpVerifed });
+
+    await otpschema.deleteOne({ _id: checkingOtpVerified._id });
+
     return res.status(200).json({
       message: "Password updated",
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return res.status(500).json({
       message: "Internal server error",
     });
   }
-};
-
-
-module.exports = {
-  loginroute,
-  signuproute,
-  forgetPassword,
-  verifyingSentOtp,
-  resetPassword
 };

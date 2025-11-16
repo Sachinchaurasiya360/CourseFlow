@@ -1,8 +1,9 @@
 const nodemailer = require("nodemailer");
+import { emailTypes } from "../../server/types";
 const dotenv = require("dotenv");
 dotenv.config();
 
- const sendEmail = async (to, subject, body) => {
+export const sendEmail = async ({ to, subject, body }: emailTypes) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "gmail",
@@ -19,11 +20,9 @@ dotenv.config();
       from: "CourseFlow",
       to: to,
       subject: subject,
-      html: body ,
+      html: body,
     });
-
   } catch (error) {
     console.error(error);
   }
 };
-module.exports={sendEmail}

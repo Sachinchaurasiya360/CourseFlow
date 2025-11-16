@@ -7,18 +7,6 @@
 
 ---
 
-### **2. Course Management (Admin only)**
-
-
-
----
-
-### **3. Course Browsing (Students)**
-
-
-
----
-
 ### **4. Enrollment & Payments**
 
 * `POST /enroll/:courseId` → Enroll a student (initiate payment).

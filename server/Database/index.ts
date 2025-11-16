@@ -1,16 +1,24 @@
-const mongoose = require("mongoose");
-require("dotenv").config();
-const connectdb = async () => {
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const connectdb = async (): Promise<void> => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL);
+    const dbUrl = process.env.DATABASE_URL;
+    if (!dbUrl) {
+      throw new Error("DATABASE_URL is not defined in environment variables");
+    }
+    await mongoose.connect(dbUrl);
     console.log("Database has been connected");
   } catch (error) {
     console.log(error);
   }
 };
+
 setTimeout(() => {
   connectdb();
-}, 9000); //making it so that frequent database connection call should not go to the db
+}, 2000); // making it so that frequent database connection call should not go to the db
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,6 +32,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 const courseContentSchema = new mongoose.Schema({
   title: String,
   description: String,
@@ -34,6 +43,7 @@ const courseContentSchema = new mongoose.Schema({
     default: false,
   },
 });
+
 const weekSchema = new mongoose.Schema({
   weekNumber: {
     type: Number,
@@ -42,6 +52,7 @@ const weekSchema = new mongoose.Schema({
   title: String,
   lesson: [courseContentSchema],
 });
+
 const courseSchema = new mongoose.Schema(
   {
     title: String,
@@ -62,6 +73,7 @@ const courseSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 const couponSchema = new mongoose.Schema(
   {
     courseId: {
@@ -107,11 +119,12 @@ const blogSchema = new mongoose.Schema({
   published: Boolean,
   publishedAt: String,
 });
+
 const otpSchema = new mongoose.Schema(
   {
     identifier: String,
     expireAt: Date,
-    verifed: { type: Boolean, default: false },
+    verified: { type: Boolean, default: false },
     otp: String,
   },
   {
@@ -127,13 +140,11 @@ const coupanSchema = new mongoose.Schema({
   CurrentUsages: { type: Number, default: 0 },
 });
 
-//using TTL(time to live) it will autometically delete the doc after 5 min
+// using TTL(time to live) it will automatically delete the doc after 5 min
 otpSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
-const user = mongoose.model("user", userSchema);
-const course = mongoose.model("course", courseSchema);
-const blog = mongoose.model("blog", blogSchema);
-const otpschema = mongoose.model("otpschema", otpSchema);
-const coupan = mongoose.model("coupan", coupanSchema);
-
-module.exports = { user, course, blog, otpschema, coupan };
+export const user = mongoose.model("user", userSchema);
+export const course = mongoose.model("course", courseSchema);
+export const blog = mongoose.model("blog", blogSchema);
+export const otpschema = mongoose.model("otpschema", otpSchema);
+export const coupan = mongoose.model("coupan", coupanSchema);

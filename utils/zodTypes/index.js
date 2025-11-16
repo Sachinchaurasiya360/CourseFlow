@@ -1,4 +1,4 @@
-const { z, email, string } = require("zod");
+const { z} = require("zod");
 const signupSchema = z.object({
   email: z.string().email(),
   firstName: z.string().min(1),
