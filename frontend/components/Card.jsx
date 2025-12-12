@@ -1,11 +1,13 @@
 export default function Card({ title, description, figures }) {
   return (
-    <div className="bg-primary1 rounded-xl w-80 h-40  ">
-      <h1 className="text-3xl font-semibold flex justify-center w-full">
-        {title}
+    <div className="bg-white rounded-2xl w-80 p-6 border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm">
+      <h1 className="text-3xl font-bold text-black text-center mb-2">
+        {figures}
       </h1>
-      <p className="w-full flex justify-center">{description}</p>
-      <h2 className="flex justify-center">{figures}</h2>
+      <h2 className="text-lg font-semibold text-black text-center mb-1">
+        {title}
+      </h2>
+      <p className="text-gray-600 text-center text-sm">{description}</p>
     </div>
   );
 }

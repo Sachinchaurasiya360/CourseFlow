@@ -38,169 +38,273 @@ export default function LandingPage() {
   }
 
   return (
-    <div>
+    <div className="bg-white min-h-screen">
       <Navbar />
-      <div>
-        <div className="max-w-full bg-fourth h-150 rounded-2xl m-2 mt-6 ml-6 mr-6">
-          <h1 className="flex text-5xl justify-center font-bold pt-40 px-70 text-center">
-            Unlock your potential with Expert-led Online courses{" "}
+
+      {/* Hero Section */}
+      <div className="relative overflow-hidden py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h1 className="text-6xl font-bold text-black mb-6 leading-tight">
+            Unlock Your Potential with
+            <span className="block mt-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+              Expert-Led Online Courses
+            </span>
           </h1>
-          <p className=" mt-15 ml-30 mr-30 pl-40 pr-40 text-xl flex justify-center text-center font-semibold text-gray-500">
+          <p className="mt-6 text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             Explore a vast library of courses taught by industry professionals.
             Learn new skills, advance your career, and achieve your goals at
             your own pace.
           </p>
-          <div className="flex w-full mt-10 justify-center">
+          <div className="flex justify-center gap-4 mt-10">
             <Buttons buttoncontent={"Start Learning Today"} />
+            <button className="bg-transparent border-2 border-black text-black px-8 py-3 rounded-full font-bold hover:bg-black hover:text-white transition-all duration-300">
+              Explore Courses
+            </button>
           </div>
         </div>
 
-        <h2 className="mt-6 ml-6 text-3xl font-semibold"> Featured Courses</h2>
-        <div className="w-ful grid grid-cols-4">
-          {CourseForLandingPage.length > 0 ? (
-            CourseForLandingPage.map((courses) => (
-              <div
-                className="bg-primary shadow-2xs rounded-2xl w-70 h-115 ml-10 mt-3"
-                key={courses._id}
-              >
-                <img
-                  src={courses.thumbnail}
-                  alt="thumbnail not found"
-                  className="p-3 rounded-3xl h-60 w-full"
-                />
-                <h1 className="text-xl font-semibold p-3">{courses.title}</h1>
-                <p className="p-3 font-semibold pt-1 text-gray-600">
-                  {courses.description}
-                </p>
-                <h2 className="p-3 text-xl text-blue-700 font-bold">
-                  ₹{courses.price} only
-                </h2>
-
-                <button
-                  className="w-66 bg-secondary p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50 text-center mx-2 hover:cursor-pointer"
-                  onClick={()=> redirectToCourseDetail(courses._id)}
-                >
-                  Enroll Now
-                </button>
-              </div>
-            ))
-          ) : (
-            <h1>Loading....</h1>
-          )}
-        </div>
-
-        <h2 className="mt-6 ml-6 font-semibold text-3xl mb-3">
-          Explore Categories
-        </h2>
-        <div className="px-10 grid grid-cols-5 gap-6">
-          <CardForLandingPage
-            logo={<Figma className="w-10 h-10 text-secondary" />}
-            content={"Design"}
-          />
-
-          <CardForLandingPage
-            logo={<Activity className="w-10 h-10 text-secondary" />}
-            content={"Health And Fitness"}
-          />
-          <CardForLandingPage
-            logo={<Headphones className="w-10 h-10 text-secondary" />}
-            content={"Headphones"}
-          />
-          <CardForLandingPage
-            logo={<Wallpaper className="w-10 h-10 text-secondary" />}
-            content={"Technology"}
-          />
-          <CardForLandingPage
-            logo={<Camera className="w-10 h-10 text-secondary" />}
-            content={"Camera "}
-          />
-          <CardForLandingPage
-            logo={<Play className="w-10 h-10 text-secondary" />}
-            content={"Editing"}
-          />
-          <CardForLandingPage
-            logo={<Bug className="w-10 h-10 text-secondary" />}
-            content={"Debugging"}
-          />
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-gray-200 rounded-full opacity-20 blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gray-200 rounded-full opacity-20 blur-3xl"></div>
         </div>
       </div>
 
-      <h1 className="font-semibold text-2xl m-3 ml-6 mt-10">
-        What Our Students Say
-      </h1>
+      {/* Featured Courses Section */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-4xl font-bold text-black">Featured Courses</h2>
+          <button className="text-gray-700 hover:text-black transition-colors font-semibold">
+            View All →
+          </button>
+        </div>
 
-      <div className="mx-10 grid grid-cols-4 mt-6  ">
-        <div className=" h-60 w-60 bg-primary rounded-2xl mb-8">
-          <p className="pt-4 px-4">
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            possimus, autem debitis nobis dolos accusamus, soluta, ea magnam
-            reiciendis sit lrem "
-          </p>
-          <div className=" flex mt-3 items-center">
-            <img
-              src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
-              alt=""
-              className=" h-10 w-10 rounded-full ml-2"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {CourseForLandingPage.length > 0 ? (
+            CourseForLandingPage.map((courses) => (
+              <div
+                className="bg-white rounded-2xl overflow-hidden border-2 border-gray-200 hover:border-black transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-sm"
+                key={courses._id}
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={courses.thumbnail}
+                    alt={courses.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
+                </div>
+
+                <div className="p-5">
+                  <h3 className="text-xl font-bold text-black mb-2 line-clamp-2">
+                    {courses.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {courses.description}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-black">
+                      ₹{courses.price}
+                    </span>
+                  </div>
+
+                  <button
+                    className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all duration-300"
+                    onClick={() => redirectToCourseDetail(courses._id)}
+                  >
+                    Enroll Now
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-4 text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+              <p className="text-gray-600 mt-4">Loading courses...</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Explore Categories Section */}
+      <div className="bg-gray-50 py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl font-bold text-black mb-12">
+            Explore Categories
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <CardForLandingPage
+              logo={<Figma className="w-12 h-12 text-black" />}
+              content={"Design"}              
             />
-            <div>
-              <h2 className="font-bold pl-4 pt-2">Jane Doe</h2>
-              <p className=" pl-4  text-gray-500 ">Web Developer</p>
+            <CardForLandingPage
+              logo={<Activity className="w-12 h-12 text-black" />}
+              content={"Health & Fitness"}
+            />
+            <CardForLandingPage
+              logo={<Headphones className="w-12 h-12 text-black" />}
+              content={"Music"}
+            />
+            <CardForLandingPage
+              logo={<Wallpaper className="w-12 h-12 text-black" />}
+              content={"Technology"}
+            />
+            <CardForLandingPage
+              logo={<Camera className="w-12 h-12 text-black" />}
+              content={"Photography"}
+            />
+            <CardForLandingPage
+              logo={<Play className="w-12 h-12 text-black" />}
+              content={"Video Editing"}
+            />
+            <CardForLandingPage
+              logo={<Bug className="w-12 h-12 text-black" />}
+              content={"Development"}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <h2 className="text-4xl font-bold text-black mb-12">
+          What Our Students Say
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm">
+            <div className="flex mb-4">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="w-5 h-5 text-black fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              "This platform transformed my career! The courses are
+              well-structured, and the instructors are incredibly knowledgeable.
+              Highly recommend!"
+            </p>
+            <div className="flex items-center">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
+                alt="Student"
+                className="h-12 w-12 rounded-full object-cover border-2 border-black"
+              />
+              <div className="ml-4">
+                <h3 className="font-bold text-black">Jane Doe</h3>
+                <p className="text-gray-600 text-sm">Web Developer</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm">
+            <div className="flex mb-4">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="w-5 h-5 text-black fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              "Amazing learning experience! The flexibility to learn at my own
+              pace while getting professional guidance made all the difference."
+            </p>
+            <div className="flex items-center">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
+                alt="Student"
+                className="h-12 w-12 rounded-full object-cover border-2 border-black"
+              />
+              <div className="ml-4">
+                <h3 className="font-bold text-black">John Smith</h3>
+                <p className="text-gray-600 text-sm">UI/UX Designer</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm">
+            <div className="flex mb-4">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="w-5 h-5 text-black fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              "The quality of content is outstanding. I've learned more here in
+              months than I did in years of self-teaching. Worth every penny!"
+            </p>
+            <div className="flex items-center">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
+                alt="Student"
+                className="h-12 w-12 rounded-full object-cover border-2 border-black"
+              />
+              <div className="ml-4">
+                <h3 className="font-bold text-black">Sarah Johnson</h3>
+                <p className="text-gray-600 text-sm">Data Scientist</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm">
+            <div className="flex mb-4">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="w-5 h-5 text-black fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              "Best investment in my education! The courses are comprehensive,
+              practical, and taught by experts who really know their stuff."
+            </p>
+            <div className="flex items-center">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
+                alt="Student"
+                className="h-12 w-12 rounded-full object-cover border-2 border-black"
+              />
+              <div className="ml-4">
+                <h3 className="font-bold text-black">Mike Chen</h3>
+                <p className="text-gray-600 text-sm">Software Engineer</p>
+              </div>
             </div>
           </div>
         </div>
-        <div className=" h-60 w-60 bg-primary rounded-2xl mb-8">
-          <p className="pt-4 px-4">
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            possimus, autem debitis nobis dolos accusamus, soluta, ea magnam
-            reiciendis sit lrem "
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-white py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-5xl font-bold text-black mb-6">
+            Ready to Start Learning?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Join thousands of students already learning on our platform.
           </p>
-          <div className=" flex mt-3 items-center">
-            <img
-              src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
-              alt=""
-              className=" h-10 w-10 rounded-full ml-2"
-            />
-            <div>
-              <h2 className="font-bold pl-4 pt-2">Jane Doe</h2>
-              <p className=" pl-4  text-gray-500 ">Web Developer</p>
-            </div>
-          </div>
-        </div>
-        <div className=" h-60 w-60 bg-primary rounded-2xl mb-8">
-          <p className="pt-4 px-4">
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            possimus, autem debitis nobis dolos accusamus, soluta, ea magnam
-            reiciendis sit lrem "
-          </p>
-          <div className=" flex mt-3 items-center">
-            <img
-              src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
-              alt=""
-              className=" h-10 w-10 rounded-full ml-2"
-            />
-            <div>
-              <h2 className="font-bold pl-4 pt-2">Jane Doe</h2>
-              <p className=" pl-4  text-gray-500 ">Web Developer</p>
-            </div>
-          </div>
-        </div>
-        <div className=" h-60 w-60 bg-primary rounded-2xl mb-8">
-          <p className="pt-4 px-4">
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            possimus, autem debitis nobis dolos accusamus, soluta, ea magnam
-            reiciendis sit lrem "
-          </p>
-          <div className=" flex mt-3 items-center">
-            <img
-              src="https://plus.unsplash.com/premium_photo-1689530775582-83b8abdb5020?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFuZG9tJTIwcGVyc29ufGVufDB8fDB8fHww"
-              alt=""
-              className=" h-10 w-10 rounded-full ml-2"
-            />
-            <div>
-              <h2 className="font-bold pl-4 pt-2">Jane Doe</h2>
-              <p className=" pl-4  text-gray-500 ">Web Developer</p>
-            </div>
-          </div>
+          <button className="bg-black text-white px-12 py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
+            Get Started Now
+          </button>
         </div>
       </div>
     </div>

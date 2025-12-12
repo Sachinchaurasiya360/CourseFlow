@@ -3,28 +3,38 @@ import { useNavigate } from "react-router-dom";
 export default function Navbar() {
   const navigate = useNavigate();
   return (
-    <div className="flex -space-x-1 max-w-full bg-primary list-none items-center p-3 shadow-l">
-      <h1 className="font-semibold text-3xl mr-18 ml-10 ">CourseFlow</h1>
+    <div className="flex items-center justify-between bg-white border-b border-gray-200 px-8 py-4 shadow-sm">
+      <h1 className="font-bold text-3xl text-black cursor-pointer hover:text-gray-700 transition-colors">
+        CourseFlow
+      </h1>
 
-      <div className=" flex space-x-8 mr-10 font-semibold text-md">
-        <li>Home</li>
-        <li>Courses</li>
-        <li>Categories</li>
-        <li>About Us</li>
-        <li>Contact</li>
+      <div className="flex space-x-8 font-semibold text-md">
+        <li className="list-none text-gray-700 hover:text-black cursor-pointer transition-colors">
+          Home
+        </li>
+        <li className="list-none text-gray-700 hover:text-black cursor-pointer transition-colors">
+          Courses
+        </li>
+        <li className="list-none text-gray-700 hover:text-black cursor-pointer transition-colors">
+          Categories
+        </li>
+        <li className="list-none text-gray-700 hover:text-black cursor-pointer transition-colors">
+          About Us
+        </li>
+        <li className="list-none text-gray-700 hover:text-black cursor-pointer transition-colors">
+          Contact
+        </li>
       </div>
 
-      <div></div>
-      {/* <label htmlFor=""><Search /></label> */}
-      <input
-        type="text"
-        placeholder="Search Courses..."
-        className="bg-white p-2 pl-2 pr-30 rounded-2xl  mr-1 ml-8 border-gray-500 border-1 shadow-2xs"
-      />
+      <div className="flex items-center space-x-4">
+        <input
+          type="text"
+          placeholder="Search Courses..."
+          className="bg-gray-100 text-black placeholder-gray-500 p-2 px-4 rounded-full border border-gray-300 focus:border-black focus:outline-none transition-colors w-64"
+        />
 
-      <div className="flex justify-around space-x-10 ml-30">
         <button
-          className=" block bg-secondary p-2 pl-6 pr-6 rounded-xl text-l font-semibold hover:text-gray-50 cursor-pointer"
+          className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 cursor-pointer transition-all duration-300"
           onClick={() => {
             navigate("/login");
           }}
@@ -32,7 +42,7 @@ export default function Navbar() {
           Login
         </button>
         <button
-          className="flex mr-2 p-2 pl-6 pr-6 rounded-xl bg-third text-l  font-semibold hover:cursor-pointer "
+          className="bg-transparent border-2 border-black text-black px-6 py-2 rounded-full font-semibold hover:bg-black hover:text-white cursor-pointer transition-all duration-300"
           onClick={() => {
             navigate("/signup");
           }}

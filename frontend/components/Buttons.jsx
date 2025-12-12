@@ -1,11 +1,13 @@
-export default function Buttons({buttoncontent,onClick}){
-    return(
-        <div className="">
-
-            <button className="flex bg-secondary  p-2.5 pr-3 pl-3 rounded-xl font-semibold text-gray-50"
-            type="button"
-            onClick={onClick}
-            >{buttoncontent}</button>
-        </div>
-    )
+export default function Buttons({ buttoncontent, onClick }) {
+  return (
+    <div className="">
+      <button
+        className="bg-black text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+        type="button"
+        onClick={onClick}
+      >
+        {buttoncontent}
+      </button>
+    </div>
+  );
 }
