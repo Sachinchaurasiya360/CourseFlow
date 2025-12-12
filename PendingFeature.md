@@ -13,9 +13,7 @@
 * `POST /webhook/payment` → **Webhook** for Razorpay/Stripe payment success/failure (very important).
 * `GET /my-courses` → List of enrolled courses for student.
 
----
-
-### **5. Blogs / Articles**
+---# **5. Blogs / Articles**
 
 * `GET /blogs` → List blogs (**with pagination**).
 * `GET /blogs/:id` → Fetch single blog.

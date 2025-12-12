@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import {  Response } from "express";
 import { user } from "../Database/index";
 import { loginschema, signupSchema } from "../../utils/zodTypes/index";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-import  {sendEmail}  from "../../utils/config/sendEmail";
+import { sendEmail } from "../../utils/config/sendEmail";
 import { GenerateOtp } from "../../utils/config/otpGenerator";
 import { otpschema } from "../Database/index";
 import {
@@ -36,7 +36,7 @@ export const loginroute = async (
     })) as IUser | null;
 
     if (!existinguser) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "User does not exist in database",
       });
     }
@@ -68,12 +68,12 @@ export const loginroute = async (
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      maxAge: 360000000,
+      maxAge: 3600000,
     });
 
     return res.status(200).json({
+      success: true,
       message: "User login successfully",
-      token,
       user: {
         id: existinguser._id.toString(),
         role: existinguser.role,
@@ -92,7 +92,7 @@ export const signuproute = async (
   res: Response
 ): Promise<Response> => {
   try {
-    console.log("hello")
+    console.log("hello");
     const result = signupSchema.safeParse(req.body);
     console.log(result);
     if (!result.success) {
@@ -124,7 +124,9 @@ export const signuproute = async (
   } catch (error) {
     console.error("Signup Error", error);
     return res.status(500).json({
-      message: "Internal server errr",
+      message: "Internal server error",
+      success:false
+      
     });
   }
 };
@@ -166,7 +168,7 @@ export const forgetPassword = async (
            </div>
       `;
 
-    await sendEmail({to, subject, body});
+    await sendEmail({ to, subject, body });
     const hashedOtp = await bcrypt.hash(SentOtp.toString(), 12);
     await otpschema.create({
       identifier: to,
