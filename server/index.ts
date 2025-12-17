@@ -14,7 +14,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      process.env.FRONTEND_URL || "http://localhost:5173",
+    ].filter(Boolean),
     credentials: true,
   })
 );
@@ -31,8 +35,14 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/course", courseRoute);
 
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+// Export for Vercel serverless deployment
+export default app;

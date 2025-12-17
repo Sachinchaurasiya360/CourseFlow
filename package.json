@@ -19,7 +19,9 @@
   "type": "commonjs",
   "scripts": {
     "start": "nodemon ./server/index.ts",
-    "dev": "nodemon --exec ts-node server/index.ts"
+    "dev": "nodemon --exec ts-node server/index.ts",
+    "build": "tsc",
+    "vercel-build": "echo 'Build complete'"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
