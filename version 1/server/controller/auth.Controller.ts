@@ -1,4 +1,4 @@
-import {  Response } from "express";
+import { Response } from "express";
 import { user } from "../Database/index";
 import { loginschema, signupSchema } from "../../utils/zodTypes/index";
 import * as bcrypt from "bcrypt";
@@ -6,6 +6,7 @@ import * as jwt from "jsonwebtoken";
 import { sendEmail } from "../../utils/config/sendEmail";
 import { GenerateOtp } from "../../utils/config/otpGenerator";
 import { otpschema } from "../Database/index";
+
 import {
   TypedRequest,
   LoginRequestBody,
@@ -125,8 +126,7 @@ export const signuproute = async (
     console.error("Signup Error", error);
     return res.status(500).json({
       message: "Internal server error",
-      success:false
-      
+      success: false,
     });
   }
 };

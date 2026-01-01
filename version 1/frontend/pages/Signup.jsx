@@ -18,22 +18,22 @@ export default function Signup() {
     setError("");
     setLoading(true);
 
-    // try {
-    //   const res = await axios.post(`${process.env.baseurl}`, {
-    //     email,
-    //     firstName,
-    //     lastName,
-    //     password,
-    //     role,
-    //   });
-    //   setTimeout(() => {
-    //     navigate("/login");
-    //   }, 2000);
-    // } catch (error) {
-    //   setError(error.response?.data?.message || "Something went wrong");
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const res = await axios.post(`${process.env.baseurl}`, {
+        email,
+        firstName,
+        lastName,
+        password,
+        role,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      setError(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
