@@ -1,20 +1,5 @@
 # CourseFlow - API Routes & Features
 
-## 🔐 Authentication & Authorization
-
-- **POST /api/v1/auth/signup** → User registration
-- **POST /api/v1/auth/login** → User login
-- **POST /api/v1/auth/logout** → User logout
-- **GET /api/v1/auth/me** → Get current user profile
-- **PATCH /api/v1/auth/forgetpassword** → Request password reset OTP
-- **POST /api/v1/auth/verifyingSentOtp** → Verify OTP
-- **POST /api/v1/auth/resetPassword** → Reset password
-- **PUT /api/v1/auth/update-profile** → Update user profile
-- **POST /api/v1/auth/verify-email** → Verify email with token
-- **POST /api/v1/auth/resend-verification** → Resend verification email
-
----
-
 ## 📚 Course Management
 
 - **POST /api/v1/course/createcourse** → Create new course (Admin)
