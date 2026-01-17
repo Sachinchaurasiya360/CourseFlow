@@ -4,8 +4,8 @@ import type { Request, Response } from 'express';
 export class CourseController {
   constructor(private courseService: CourseService) {}
 
-  // Get all courses
-  getAllCourses = async (req: Request, res: Response) => {
+  // Get all courses with pagination and filtering
+  getAllCourses = async (req: Request, res: Response):Promise<Response> => {
     try {
       const courses = await this.courseService.getAllCourses();
       return res.status(200).json({
@@ -23,10 +23,10 @@ export class CourseController {
   };
 
   // Get course by ID
-  getCourseById = async (req: Request, res: Response) => {
+  getCourseById = async (req: Request, res: Response):Promise<Response> => {
     try {
       const { id } = req.params;
-      const course = await this.courseService.getCourseById(id) ;
+      const course = await this.courseService.getCourseById(id as string);
       
       if (!course) {
         return res.status(404).json({
@@ -50,7 +50,7 @@ export class CourseController {
   };
 
   // Create new course
-  createCourse = async (req: Request, res: Response) => {
+  createCourse = async (req: Request, res: Response):Promise<Response> => {
     try {
       const courseData = req.body;
       const newCourse = await this.courseService.createCourse(courseData);
@@ -70,12 +70,12 @@ export class CourseController {
   };
 
   // Update course
-  updateCourse = async (req: Request, res: Response) => {
+  updateCourse = async (req: Request, res: Response):Promise<Response> => {
     try {
       const { id } = req.params;
       const updateData = req.body;
       
-      const updatedCourse = await this.courseService.updateCourse(id, updateData);
+      const updatedCourse = await this.courseService.updateCourse(id as string, updateData);
       
       if (!updatedCourse) {
         return res.status(404).json({
@@ -99,11 +99,10 @@ export class CourseController {
   };
 
   // Delete course
-  deleteCourse = async (req: Request, res: Response) => {
+  deleteCourse = async (req: Request, res: Response):Promise<Response> => {
     try {
       const { id } = req.params;
-      
-      const deletedCourse = await this.courseService.deleteCourse(id);
+      const deletedCourse = await this.courseService.deleteCourse(id as string);
       
       if (!deletedCourse) {
         return res.status(404).json({
