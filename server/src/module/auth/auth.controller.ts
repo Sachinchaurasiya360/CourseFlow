@@ -106,7 +106,8 @@ export class AuthController {
         hashedPassword,
         email
       );
-
+        // Send email to them using the redis and bull mq
+        
       return res.status(201).json({
         message: "Account created successfully",
         success: true,
@@ -115,7 +116,7 @@ export class AuthController {
           name: newUser.name,
           email: newUser.email,
         },
-      });
+      }); 
     } catch (error) {
       console.error("Signup error:", error);
       return res.status(500).json({

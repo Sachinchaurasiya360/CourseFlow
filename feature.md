@@ -2,11 +2,7 @@
 
 ## 📚 Course Management
 
-- **POST /api/v1/course/createcourse** → Create new course (Admin)
-- **PUT /api/v1/course/updatecourse/:courseId** → Update course (Admin)
-- **DELETE /api/v1/course/deleteCourse/:courseId** → Delete course (Admin)
-- **GET /api/v1/course/getcourse** → Get all courses
-- **GET /api/v1/course/getsinglecourse/:courseId** → Get single course details
+
 - **POST /api/v1/course/createWeek/:courseId** → Create week/module (Admin)
 - **PUT /api/v1/course/updateWeek/:courseId/:weekId** → Update week (Admin)
 - **DELETE /api/v1/course/deleteWeek/:courseId/:weekId** → Delete week (Admin)
