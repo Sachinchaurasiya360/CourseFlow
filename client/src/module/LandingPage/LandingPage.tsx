@@ -23,7 +23,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400 mb-3">Product</p>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Your course business, at a glance</h2>
-            <p className="text-neutral-400 text-lg max-w-xl mx-auto">One dashboard to manage students, revenue, and content — nothing else needed.</p>
+            <p className="text-neutral-400 text-lg max-w-xl mx-auto">One dashboard to manage students, revenue, and content ï¿½ nothing else needed.</p>
           </div>
 
           {/* Browser mockup */}
@@ -90,7 +90,7 @@ export default function LandingPage() {
                         <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/30"></div>
                         <div>
                           <p className="text-sm font-semibold text-white">{course}</p>
-                          <p className="text-xs text-white/30">Active · {[312, 198, 420][i]} students</p>
+                          <p className="text-xs text-white/30">Active ï¿½ {[312, 198, 420][i]} students</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -156,7 +156,7 @@ export default function LandingPage() {
               },
               {
                 title: "Mobile Ready",
-                desc: "Every course looks stunning on any screen size, right out of the box — no extra work required.",
+                desc: "Every course looks stunning on any screen size, right out of the box ï¿½ no extra work required.",
                 icon: (
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 9h3" />
                 ),
@@ -188,17 +188,17 @@ export default function LandingPage() {
               {
                 quote: "CourseFlow cut my launch time from weeks to a single afternoon. The builder is genuinely intuitive.",
                 name: "Sarah M.",
-                role: "UX Design Educator · 4,200 students",
+                role: "UX Design Educator ï¿½ 4,200 students",
               },
               {
                 quote: "I moved from Teachable and never looked back. The analytics alone are worth the switch.",
                 name: "James K.",
-                role: "Full-Stack Dev Instructor · 8,100 students",
+                role: "Full-Stack Dev Instructor ï¿½ 8,100 students",
               },
               {
                 quote: "My revenue doubled in three months. The built-in checkout removes every friction point.",
                 name: "Priya R.",
-                role: "Business Coach · 1,900 students",
+                role: "Business Coach ï¿½ 1,900 students",
               },
             ].map((t) => (
               <div key={t.name} className="bg-white/3 border border-white/7 rounded-2xl p-7">
@@ -246,7 +246,7 @@ export default function LandingPage() {
               See all features
             </a>
           </div>
-          <p className="mt-6 text-xs text-white/25">No credit card · Free plan always available · Cancel anytime</p>
+          <p className="mt-6 text-xs text-white/25">No credit card ï¿½ Free plan always available ï¿½ Cancel anytime</p>
         </div>
       </section>
 
@@ -345,7 +345,7 @@ export default function LandingPage() {
 
           {/* Bottom Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between border-t border-white/6 pt-8 gap-3 text-xs text-neutral-500">
-            <p>© {new Date().getFullYear()} CourseFlow, Inc. All rights reserved.</p>
+            <p>ï¿½ {new Date().getFullYear()} CourseFlow, Inc. All rights reserved.</p>
             <div className="flex items-center gap-5">
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
               <a href="#" className="hover:text-white transition-colors">Terms</a>
