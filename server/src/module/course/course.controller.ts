@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { CourseService } from "./course.service.js";
 import { courseCreateValidation } from "./course.validation.js";
-import { success } from "zod";
+
 export class CourseController {
   constructor(private readonly courseServices: CourseService) {}
 
@@ -13,7 +13,7 @@ export class CourseController {
         success: false,
       });
     }
-      console.log(validateInput.data)
+    console.log(validateInput.data)
   }
 
   async updateCourse(req:Request,res:Response){

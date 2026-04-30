@@ -17,7 +17,7 @@ export const connectToDatabase = async () => {
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
-  password: String,
+  password: { type: String, required: true , select: false},
   authenticationMethod: { type: String, enum: ["local", "google"] },
   role: { type: String, enum: ["STUDENT", "ADMIN"] },
   bio: { type: String },
