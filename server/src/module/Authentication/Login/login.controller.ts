@@ -11,7 +11,6 @@ export class LoginController {
 
   async login(req: Request, res: Response) {
     try {
-      logger.info("hello")
       const validationResult = loginValidation.safeParse(req.body);
       if (!validationResult.success) {
         return res.status(400).json({
@@ -44,7 +43,7 @@ export class LoginController {
           email: getUser.email,
           name: getUser.name,
         },
-        process.env.JWT_SECRET || "DefaultSecretKey",
+        process.env.JWT_SECRET || "defaultSecretKey",
         {
           expiresIn: "24h",
         },

@@ -1,7 +1,7 @@
 import { User } from "../../../database/index.js";
 import bcrypt from "bcrypt";
 export class LoginService {
-  
+
   async isEmailExists(email: string): Promise<boolean> {
     const isEmailExists = await User.findOne({ email });
     return isEmailExists ? true : false;
@@ -17,7 +17,7 @@ export class LoginService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     return user;
   }
 

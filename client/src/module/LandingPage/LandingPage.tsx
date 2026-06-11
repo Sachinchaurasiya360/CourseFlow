@@ -1,359 +1,816 @@
-import Navbar from "../module/navbar";
-import { GlowyWavesHero } from "@/components/ui/glowy-waves-hero";
+import { useState } from "react";
+import "./LandingPage.css";
 
-const navbarItems = [
-  { name: "Home", path: "/" },
-  { name: "Features", path: "/features" },
-  { name: "Courses", path: "/courses" },
-  { name: "Pricing", path: "/pricing" },
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+const COURSES = [
+  {
+    id: 1,
+    title: "Full-Stack Web Development with React & Node",
+    instructor: "Alex Chen",
+    duration: "42 hours",
+    rating: 4.9,
+    reviews: 2847,
+    price: 89,
+    tag: "Bestseller",
+    level: "Intermediate",
+  },
+  {
+    id: 2,
+    title: "Data Science & Machine Learning Fundamentals",
+    instructor: "Dr. Priya Sharma",
+    duration: "38 hours",
+    rating: 4.8,
+    reviews: 1923,
+    price: 99,
+    tag: "New",
+    level: "Beginner",
+  },
+  {
+    id: 3,
+    title: "System Design for Senior Engineers",
+    instructor: "Marcus Williams",
+    duration: "24 hours",
+    rating: 4.9,
+    reviews: 1456,
+    price: 119,
+    tag: null,
+    level: "Advanced",
+  },
 ];
 
+const MODULES = [
+  {
+    id: 1,
+    title: "Module 1: Foundations & Environment Setup",
+    lessons: [
+      { title: "Course overview and learning path", duration: "8 min" },
+      { title: "Setting up your development environment", duration: "22 min" },
+      { title: "Understanding the JavaScript runtime", duration: "18 min" },
+      { title: "Git workflow and version control", duration: "15 min" },
+    ],
+  },
+  {
+    id: 2,
+    title: "Module 2: React Core Concepts",
+    lessons: [
+      { title: "Components, props, and state", duration: "34 min" },
+      { title: "Hooks in depth: useState, useEffect, useContext", duration: "45 min" },
+      { title: "Performance: useMemo and useCallback", duration: "28 min" },
+      { title: "Building real-world forms with validation", duration: "52 min" },
+    ],
+  },
+  {
+    id: 3,
+    title: "Module 3: Node.js & REST APIs",
+    lessons: [
+      { title: "Express.js fundamentals", duration: "30 min" },
+      { title: "Database design with PostgreSQL", duration: "42 min" },
+      { title: "Authentication with JWT and sessions", duration: "38 min" },
+      { title: "API security and rate limiting", duration: "25 min" },
+    ],
+  },
+  {
+    id: 4,
+    title: "Module 4: Deployment & Production",
+    lessons: [
+      { title: "Docker and containerization", duration: "35 min" },
+      { title: "CI/CD with GitHub Actions", duration: "28 min" },
+      { title: "Deploying to AWS and Vercel", duration: "40 min" },
+    ],
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    initials: "SM",
+    name: "Sarah Mitchell",
+    role: "Frontend Engineer at Shopify",
+    timeAgo: "2 months ago",
+    text: "I went from writing jQuery spaghetti to shipping production React at a company I actually wanted to work for. The system design module alone was worth the price — my interviewers kept commenting on how I talked about architecture.",
+    rating: 5,
+  },
+  {
+    initials: "JO",
+    name: "James Okonkwo",
+    role: "Software Engineer at Stripe",
+    timeAgo: "4 months ago",
+    text: "Three months after completing this course I was at Stripe. The curriculum doesn't waste your time — every lesson is dense with real patterns you'll encounter on the job. No fluff, no padding.",
+    rating: 5,
+  },
+  {
+    initials: "EV",
+    name: "Elena Vasquez",
+    role: "Full-Stack Developer, Freelance",
+    timeAgo: "1 month ago",
+    text: "I was skeptical about online courses but this one is different. The projects are portfolio-ready and have helped me land contracts. The community Slack is surprisingly active for a recorded course.",
+    rating: 5,
+  },
+];
+
+const PLANS = [
+  {
+    name: "Single Course",
+    price: 89,
+    period: "one-time",
+    description: "Full access to one course of your choice.",
+    features: [
+      "Lifetime access to course content",
+      "Certificate of completion",
+      "Community forum access",
+      "Project code and resources",
+    ],
+    featured: false,
+    cta: "Buy Course",
+  },
+  {
+    name: "All-Access",
+    price: 29,
+    period: "per month",
+    description: "Unlimited access to every course on the platform.",
+    features: [
+      "All current and future courses",
+      "Priority support and Q&A",
+      "Live monthly office hours",
+      "All certificates included",
+      "1-on-1 career coaching session",
+    ],
+    featured: true,
+    cta: "Start All-Access",
+  },
+  {
+    name: "Team",
+    price: 49,
+    period: "per seat / month",
+    description: "For teams of 5 or more with centralized billing.",
+    features: [
+      "Everything in All-Access",
+      "Admin dashboard and analytics",
+      "Custom learning paths",
+      "Dedicated account manager",
+    ],
+    featured: false,
+    cta: "Contact Sales",
+  },
+];
+
+const FAQS = [
+  {
+    q: "How long do I have access to the courses?",
+    a: "You get lifetime access to any course you purchase individually. All-Access subscribers retain access for as long as their subscription is active. If you cancel, you lose access to courses you haven't purchased separately.",
+  },
+  {
+    q: "Do courses include certificates?",
+    a: "Yes. Every course includes a shareable certificate of completion for LinkedIn or your resume. Certificates are generated automatically when you complete all course requirements.",
+  },
+  {
+    q: "What if I don't find the course useful?",
+    a: "We offer a 30-day full refund, no questions asked. If you've completed less than 30% of the course and aren't satisfied, email us and we'll process your refund within 2 business days.",
+  },
+  {
+    q: "Are courses updated when technologies change?",
+    a: "Yes. All courses are actively maintained. When a major framework version ships or best practices shift, affected modules are updated. You'll receive an email when courses you own get significant updates.",
+  },
+  {
+    q: "Is there a student or team discount?",
+    a: "Students with a valid .edu email get 40% off any course or subscription. Teams of 10+ get custom pricing — email sales@courseflow.dev and we'll put together a plan.",
+  },
+];
+
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
+const IconClock = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <circle cx="7" cy="7" r="6" stroke="#6b7280" strokeWidth="1.2" />
+    <path d="M7 4V7L9 9" stroke="#6b7280" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconStar = ({ filled = true }: { filled?: boolean }) => (
+  <svg width="13" height="13" viewBox="0 0 12 12" fill={filled ? "#f59e0b" : "none"} stroke="#f59e0b" strokeWidth="1">
+    <path d="M6 1L7.5 4.5H11L8 6.5L9 10L6 8L3 10L4 6.5L1 4.5H4.5L6 1Z" />
+  </svg>
+);
+
+const IconCheck = ({ accent }: { accent?: boolean }) => (
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+    <circle cx="7.5" cy="7.5" r="7.5" fill={accent ? "#1d4ed8" : "#eff6ff"} />
+    <path d="M4.5 7.5L6.5 9.5L10.5 5.5" stroke={accent ? "white" : "#1d4ed8"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const IconChevron = () => (
+  <svg className="cf-accordion-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const IconArrow = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const Logo = () => (
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+    <rect width="28" height="28" rx="6" fill="#1d4ed8" />
+    <path d="M7 14L12 9L17 14L22 9" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M7 19L12 14L17 19L22 14" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.55" />
+  </svg>
+);
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 export default function LandingPage() {
+  const [openModule, setOpenModule] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   return (
-    <div className="bg-white min-h-screen">
-      <Navbar NavbarProps={navbarItems} Login="Log in" Register="Get Started" />
+    <div className="cf-root">
 
-      {/* --- Glowy Waves Hero --- */}
-      <GlowyWavesHero />
+      {/* ── HEADER ── */}
+      <header className="cf-header">
+        <div className="cf-container cf-header-inner">
+          <a href="/" className="cf-logo">
+            <Logo />
+            <span className="cf-logo-text">CourseFlow</span>
+          </a>
+          <nav className="cf-nav">
+            <a href="#courses">Courses</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#reviews">Reviews</a>
+            <a href="#about">About</a>
+          </nav>
+          <div className="cf-header-actions">
+            <a href="/login" className="cf-btn-ghost">Log in</a>
+            <a href="/signup" className="cf-btn-primary">Get Started</a>
+          </div>
+        </div>
+      </header>
 
-
-      {/* --- App Preview --- */}
-      <section className="bg-[#0a0f1e] pt-4 pb-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400 mb-3">Product</p>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Your course business, at a glance</h2>
-            <p className="text-neutral-400 text-lg max-w-xl mx-auto">One dashboard to manage students, revenue, and content � nothing else needed.</p>
+      {/* ── HERO ── */}
+      <section className="cf-hero">
+        <div className="cf-container cf-hero-inner">
+          <div className="cf-hero-text">
+            <div className="cf-badge">
+              <span className="cf-badge-dot" />
+              Trusted by 40,000+ engineers
+            </div>
+            <h1 className="cf-hero-headline">
+              Learn the skills<br />
+              that <em>actually</em><br />
+              get you hired.
+            </h1>
+            <p className="cf-hero-sub">
+              Structured, rigorous courses taught by engineers who've shipped at
+              companies you know. No fluff. No filler. Just the depth that matters.
+            </p>
+            <div className="cf-hero-actions">
+              <a href="/signup" className="cf-btn-primary cf-btn-lg">Enroll Now</a>
+              <a href="#curriculum" className="cf-btn-outline cf-btn-lg">View Curriculum</a>
+            </div>
+            <div className="cf-hero-proof">
+              <div className="cf-proof-stars">
+                {[1,2,3,4,5].map(i => <IconStar key={i} />)}
+              </div>
+              <span className="cf-proof-text">4.9 from 6,200+ reviews</span>
+              <span className="cf-proof-sep">·</span>
+              <span className="cf-proof-text">30-day refund guarantee</span>
+            </div>
           </div>
 
-          {/* Browser mockup */}
-          <div className="rounded-2xl border border-white/10 shadow-2xl shadow-blue-900/20 overflow-hidden">
-            {/* Browser chrome */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#141b2d] border-b border-white/7">
-              <div className="w-3 h-3 rounded-full bg-red-500/70"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
-              <div className="flex-1 ml-3 bg-white/6 rounded-md h-7 flex items-center px-3 max-w-xs mx-auto">
-                <div className="w-3 h-3 rounded-full bg-green-400/60 mr-2 shrink-0"></div>
-                <span className="text-xs text-white/30 font-mono">app.courseflow.io/dashboard</span>
+          {/* Dashboard mockup */}
+          <div className="cf-hero-mockup">
+            {/* Floating rating card */}
+            <div className="cf-float-card cf-float-card-top">
+              <div className="cf-float-card-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.5L9.8 6H14.5L10.5 8.8L12 13.5L8 10.8L4 13.5L5.5 8.8L1.5 6H6.2L8 1.5Z" fill="#1d4ed8"/>
+                </svg>
+              </div>
+              <div>
+                <div className="cf-float-card-label">Top Rated Course</div>
+                <div className="cf-float-card-sub">4.9 · 6,200+ reviews</div>
               </div>
             </div>
-
-            {/* App content */}
-            <div className="flex h-85 bg-[#0d1526]">
-              {/* Sidebar */}
-              <div className="w-52 bg-[#0a0f1e] border-r border-white/6 p-4 flex flex-col gap-1 shrink-0">
-                <div className="flex items-center gap-2 px-3 py-2 mb-3">
-                  <div className="w-6 h-6 rounded-md bg-blue-600"></div>
-                  <span className="text-sm font-black text-white">CourseFlow</span>
+            <div className="cf-mockup-window">
+              <div className="cf-mockup-titlebar">
+                <div className="cf-mockup-dots">
+                  <span /><span /><span />
                 </div>
-                {[
-                  { label: "Dashboard", active: true },
-                  { label: "Courses", active: false },
-                  { label: "Students", active: false },
-                  { label: "Analytics", active: false },
-                  { label: "Payments", active: false },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg ${item.active ? "bg-blue-600/20 border border-blue-600/30" : ""}`}
-                  >
-                    <div className={`w-4 h-4 rounded ${item.active ? "bg-blue-400" : "bg-white/10"}`}></div>
-                    <div className={`h-2.5 rounded w-full ${item.active ? "bg-blue-300/60" : "bg-white/10"}`}></div>
+                <span className="cf-mockup-url">courseflow.dev / dashboard</span>
+              </div>
+              <div className="cf-mockup-body">
+                <div className="cf-mockup-sidebar">
+                  <div className="cf-mockup-sidebar-title">My Courses</div>
+                  <div className="cf-mockup-course-item cf-active">
+                    <span className="cf-course-dot" />
+                    Full-Stack React
                   </div>
-                ))}
-              </div>
-
-              {/* Main content */}
-              <div className="flex-1 p-6 space-y-4 overflow-hidden">
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Total Students", value: "2,481", accent: "bg-blue-500/15 border-blue-500/25", text: "text-blue-300" },
-                    { label: "Revenue", value: "$8,320", accent: "bg-green-500/15 border-green-500/25", text: "text-green-300" },
-                    { label: "Completion", value: "78%", accent: "bg-purple-500/15 border-purple-500/25", text: "text-purple-300" },
-                  ].map((card) => (
-                    <div key={card.label} className={`${card.accent} border rounded-xl p-4`}>
-                      <p className="text-xs text-white/40 mb-1">{card.label}</p>
-                      <p className={`text-2xl font-black ${card.text}`}>{card.value}</p>
+                  <div className="cf-mockup-course-item">
+                    <span className="cf-course-dot" />
+                    System Design
+                  </div>
+                  <div className="cf-mockup-course-item">
+                    <span className="cf-course-dot" />
+                    Data Science
+                  </div>
+                  <div className="cf-mockup-sidebar-section">Progress</div>
+                  <div className="cf-progress-item">
+                    <div className="cf-progress-label">
+                      <span>React & Node</span><span>68%</span>
                     </div>
-                  ))}
+                    <div className="cf-progress-bar">
+                      <div className="cf-progress-fill" style={{ width: "68%" }} />
+                    </div>
+                  </div>
+                  <div className="cf-progress-item">
+                    <div className="cf-progress-label">
+                      <span>System Design</span><span>24%</span>
+                    </div>
+                    <div className="cf-progress-bar">
+                      <div className="cf-progress-fill" style={{ width: "24%" }} />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Course list */}
-                <div className="bg-white/4 rounded-xl border border-white/7 overflow-hidden">
-                  {["Intro to React", "Advanced TypeScript", "UI/UX Design"].map((course, i) => (
-                    <div
-                      key={course}
-                      className={`flex items-center justify-between px-4 py-3 ${i !== 2 ? "border-b border-white/6" : ""}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/30"></div>
-                        <div>
-                          <p className="text-sm font-semibold text-white">{course}</p>
-                          <p className="text-xs text-white/30">Active � {[312, 198, 420][i]} students</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="h-1.5 w-28 bg-white/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${[72, 58, 90][i]}%` }}></div>
-                        </div>
-                        <span className="text-xs text-white/40 w-8 text-right">{[72, 58, 90][i]}%</span>
-                      </div>
+                <div className="cf-mockup-content">
+                  <div className="cf-mockup-lesson-header">
+                    <div className="cf-lesson-tag">Module 2 · Lesson 4</div>
+                    <div className="cf-lesson-title">Building forms with validation</div>
+                  </div>
+                  <div className="cf-mockup-video">
+                    <div className="cf-video-placeholder">
+                      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                        <circle cx="17" cy="17" r="16" stroke="#1d4ed8" strokeWidth="1.5" />
+                        <path d="M14 12L23 17L14 22V12Z" fill="#1d4ed8" />
+                      </svg>
+                      <span>52 min · HD video</span>
                     </div>
-                  ))}
+                  </div>
+                  <div className="cf-mockup-chapters">
+                    <div className="cf-chapter-item cf-chapter-done">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" />
+                        <path d="M4 7L6 9L10 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                      useState deep dive
+                    </div>
+                    <div className="cf-chapter-item cf-chapter-done">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" />
+                        <path d="M4 7L6 9L10 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                      useEffect patterns
+                    </div>
+                    <div className="cf-chapter-item cf-chapter-active">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" fillOpacity="0.12" />
+                        <circle cx="7" cy="7" r="3" fill="#1d4ed8" />
+                      </svg>
+                      Form validation (current)
+                    </div>
+                    <div className="cf-chapter-item">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="6.5" stroke="#d1d5db" />
+                      </svg>
+                      Custom hooks
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+            {/* Floating enrollment notification */}
+            <div className="cf-float-card cf-float-card-bottom">
+              <div className="cf-float-avatar">SM</div>
+              <div>
+                <div className="cf-float-card-label">Sarah just enrolled</div>
+                <div className="cf-float-card-sub">Full-Stack React · 2 min ago</div>
+              </div>
+              <div className="cf-float-live-dot" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- Features --- */}
-      <section className="bg-[#060c1a] py-28 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-400 mb-3">Features</p>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Everything you need to succeed</h2>
-            <p className="text-neutral-400 text-lg max-w-xl mx-auto">Build your education business without juggling a dozen different tools.</p>
+      {/* ── TRUST BAR ── */}
+      <section className="cf-trust">
+        <div className="cf-container">
+          <div className="cf-trust-stats">
+            <div className="cf-stat">
+              <div className="cf-stat-number">40,000+</div>
+              <div className="cf-stat-label">Students enrolled</div>
+            </div>
+            <div className="cf-stat-divider" />
+            <div className="cf-stat">
+              <div className="cf-stat-number">91%</div>
+              <div className="cf-stat-label">Completion rate</div>
+            </div>
+            <div className="cf-stat-divider" />
+            <div className="cf-stat">
+              <div className="cf-stat-number">4.9 / 5</div>
+              <div className="cf-stat-label">Average rating</div>
+            </div>
+            <div className="cf-stat-divider" />
+            <div className="cf-stat">
+              <div className="cf-stat-number">300+</div>
+              <div className="cf-stat-label">Hours of content</div>
+            </div>
           </div>
+          <div className="cf-trust-logos">
+            <span className="cf-trust-label">Our students work at</span>
+            <div className="cf-logos">
+              {["Stripe", "Shopify", "Vercel", "Notion", "Linear", "GitHub"].map((co) => (
+                <span key={co} className="cf-company-logo">{co}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-5">
+      {/* ── FEATURED COURSES ── */}
+      <section id="courses" className="cf-section">
+        <div className="cf-container">
+          <div className="cf-section-header">
+            <div className="cf-section-tag">Courses</div>
+            <h2 className="cf-section-title">Built for working engineers.</h2>
+            <p className="cf-section-sub">
+              Every course is structured around real skills with projects you can ship.
+            </p>
+          </div>
+          <div className="cf-courses-grid">
+            {COURSES.map((course) => (
+              <div key={course.id} className="cf-course-card">
+                <div className="cf-course-card-header">
+                  {course.tag && <span className="cf-course-tag">{course.tag}</span>}
+                  <span className="cf-course-level">{course.level}</span>
+                </div>
+                <h3 className="cf-course-title">{course.title}</h3>
+                <p className="cf-course-instructor">by {course.instructor}</p>
+                <div className="cf-course-meta">
+                  <span className="cf-course-duration">
+                    <IconClock />
+                    {course.duration}
+                  </span>
+                  <span className="cf-course-rating">
+                    <IconStar />
+                    {course.rating}{" "}
+                    <span className="cf-rating-count">({course.reviews.toLocaleString()})</span>
+                  </span>
+                </div>
+                <div className="cf-course-footer">
+                  <span className="cf-course-price">${course.price}</span>
+                  <button className="cf-btn-primary cf-btn-sm">Enroll Now</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="cf-courses-footer">
+            <a href="#" className="cf-link-arrow">
+              View all 24 courses <IconArrow />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHY CHOOSE US ── */}
+      <section className="cf-section cf-section-alt">
+        <div className="cf-container">
+          <div className="cf-section-header">
+            <div className="cf-section-tag">Why CourseFlow</div>
+            <h2 className="cf-section-title">The difference is in the depth.</h2>
+          </div>
+          <div className="cf-benefits-grid">
             {[
               {
-                title: "Course Builder",
-                desc: "Drag-and-drop editor. Add videos, quizzes, and assignments without writing a single line of code.",
                 icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                ),
-              },
-              {
-                title: "Live Analytics",
-                desc: "See who is watching, where they drop off, and what content drives the highest completion rates.",
-                icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                ),
-              },
-              {
-                title: "Built-in Payments",
-                desc: "Sell one-time purchases or subscriptions. Stripe-powered checkout with zero configuration needed.",
-                icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-                ),
-              },
-              {
-                title: "Certificates",
-                desc: "Auto-issue branded certificates on course completion to keep students motivated and coming back.",
-                icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-                ),
-              },
-              {
-                title: "Community",
-                desc: "Foster deeper engagement with built-in discussion forums and per-lesson Q&A threads.",
-                icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
-                ),
-              },
-              {
-                title: "Mobile Ready",
-                desc: "Every course looks stunning on any screen size, right out of the box � no extra work required.",
-                icon: (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 9h3" />
-                ),
-              },
-            ].map((f) => (
-              <div
-                key={f.title}
-                className="group bg-white/3 hover:bg-white/6 border border-white/7 hover:border-blue-500/40 rounded-2xl p-7 transition-all duration-200"
-              >
-                <div className="w-11 h-11 rounded-xl bg-blue-600/15 border border-blue-500/25 flex items-center justify-center mb-5 group-hover:bg-blue-600/25 transition-colors">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                    {f.icon}
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M11 2L13.5 8.5H20L14.5 12.5L16.5 19L11 15L5.5 19L7.5 12.5L2 8.5H8.5L11 2Z"
+                      stroke="#1d4ed8" strokeWidth="1.5" strokeLinejoin="round" />
                   </svg>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
-                <p className="text-neutral-400 text-sm leading-relaxed">{f.desc}</p>
+                ),
+                title: "Practical, job-ready skills",
+                desc: "Courses are structured around what senior engineers actually need to know — not certification checkboxes or contrived toy projects.",
+              },
+              {
+                icon: (
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="2" y="6" width="18" height="14" rx="2" stroke="#1d4ed8" strokeWidth="1.5" />
+                    <path d="M7 6V4C7 2.9 7.9 2 9 2H13C14.1 2 15 2.9 15 4V6" stroke="#1d4ed8" strokeWidth="1.5" />
+                    <path d="M11 10V16M8 13H14" stroke="#1d4ed8" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Industry-relevant content",
+                desc: "The syllabus is reviewed quarterly with input from engineers at Stripe, Vercel, and similar companies. When practices change, we update.",
+              },
+              {
+                icon: (
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M11 2C6 2 2 6 2 11s4 9 9 9 9-4 9-9" stroke="#1d4ed8" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M16 2V8H20" stroke="#1d4ed8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M20 2L14 8" stroke="#1d4ed8" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Lifetime access, forever",
+                desc: "Pay once and keep the course permanently — including all future updates. No re-purchase when a new version ships.",
+              },
+              {
+                icon: (
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <circle cx="8" cy="8" r="6" stroke="#1d4ed8" strokeWidth="1.5" />
+                    <circle cx="15" cy="14" r="6" stroke="#1d4ed8" strokeWidth="1.5" />
+                  </svg>
+                ),
+                title: "Active community",
+                desc: "Every enrollment includes access to a Slack community with 12,000+ members. Ask questions, share projects, find collaborators.",
+              },
+            ].map((b, i) => (
+              <div key={i} className="cf-benefit-card">
+                <div className="cf-benefit-icon">{b.icon}</div>
+                <h3 className="cf-benefit-title">{b.title}</h3>
+                <p className="cf-benefit-desc">{b.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- Social Proof --- */}
-      <section className="bg-[#0a0f1e] border-t border-white/5 py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-white/30 mb-10">Trusted by educators worldwide</p>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                quote: "CourseFlow cut my launch time from weeks to a single afternoon. The builder is genuinely intuitive.",
-                name: "Sarah M.",
-                role: "UX Design Educator � 4,200 students",
-              },
-              {
-                quote: "I moved from Teachable and never looked back. The analytics alone are worth the switch.",
-                name: "James K.",
-                role: "Full-Stack Dev Instructor � 8,100 students",
-              },
-              {
-                quote: "My revenue doubled in three months. The built-in checkout removes every friction point.",
-                name: "Priya R.",
-                role: "Business Coach � 1,900 students",
-              },
-            ].map((t) => (
-              <div key={t.name} className="bg-white/3 border border-white/7 rounded-2xl p-7">
-                <div className="flex gap-0.5 mb-5">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-white/70 text-sm leading-relaxed mb-5">"{t.quote}"</p>
-                <div>
-                  <p className="text-white font-semibold text-sm">{t.name}</p>
-                  <p className="text-white/35 text-xs mt-0.5">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* --- CTA --- */}
-      <section className="bg-[#060c1a] border-t border-white/5 py-28">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-400 uppercase tracking-[0.2em] mb-8">
-            Get started free
-          </div>
-          <h2 className="text-4xl md:text-6xl font-black text-white mb-5 leading-tight">
-            Your first course is<br /><span className="text-blue-400">on us.</span>
-          </h2>
-          <p className="text-neutral-400 text-lg mb-10">
-            Free forever for your first course. No credit card required. Launch in minutes.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="/register"
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-12 rounded-xl text-base shadow-xl shadow-blue-600/25 transition-all"
-            >
-              Create Your Course
-            </a>
-            <a
-              href="/features"
-              className="w-full sm:w-auto border border-white/15 hover:border-white/30 text-white/70 hover:text-white font-semibold py-4 px-10 rounded-xl text-base transition-all"
-            >
-              See all features
-            </a>
-          </div>
-          <p className="mt-6 text-xs text-white/25">No credit card � Free plan always available � Cancel anytime</p>
-        </div>
-      </section>
-
-      {/* --- Footer --- */}
-      <footer className="bg-[#0a0f1e] text-neutral-400">
-
-        {/* CTA Strip */}
-        <div className="border-b border-white/6 bg-white/1.5">
-          <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <p className="text-white font-semibold text-lg">Ready to start teaching?</p>
-              <p className="text-sm mt-1 text-neutral-400">Join 10,000+ creators already on CourseFlow.</p>
-            </div>
-            <a
-              href="/register"
-              className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg text-sm transition-all shadow-lg shadow-blue-600/20"
-            >
-              Get Started Free
-            </a>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-6 pt-14 pb-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
-
-            {/* Brand */}
-            <div className="col-span-2">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                  </svg>
-                </div>
-                <span className="text-[17px] font-black text-white">Course<span className="text-blue-400">Flow</span></span>
-              </div>
-              <p className="text-sm leading-relaxed max-w-xs mb-6">
-                The modern platform for building, launching, and monetizing online courses. No tech skills needed.
+      {/* ── CURRICULUM PREVIEW ── */}
+      <section id="curriculum" className="cf-section">
+        <div className="cf-container">
+          <div className="cf-two-col">
+            <div className="cf-curriculum-left">
+              <div className="cf-section-tag">Curriculum</div>
+              <h2 className="cf-section-title cf-section-title-left">
+                Every lesson earns<br />its place.
+              </h2>
+              <p className="cf-section-sub cf-section-sub-left">
+                We cut anything that doesn't directly build toward your goal.
+                42 hours, 0 minutes wasted.
               </p>
-              {/* Social icons */}
-              <div className="flex items-center gap-3">
-                {[
-                  { label: "Twitter", path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
-                  { label: "GitHub", path: "M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" },
-                  { label: "LinkedIn", path: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z" },
-                ].map((s) => (
-                  <a
-                    key={s.label}
-                    href="#"
-                    aria-label={s.label}
-                    className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 hover:bg-white/6 transition-all"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d={s.path} />
-                    </svg>
-                  </a>
-                ))}
+              <div className="cf-curriculum-summary">
+                <div className="cf-summary-item"><strong>4</strong>modules</div>
+                <div className="cf-summary-item"><strong>15</strong>lessons</div>
+                <div className="cf-summary-item"><strong>42 hrs</strong>total</div>
               </div>
             </div>
 
-            {/* Product */}
-            <div>
-              <p className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">Product</p>
-              <ul className="space-y-3.5 text-sm">
-                {["Features", "Pricing", "Changelog", "Roadmap"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-white transition-colors duration-150">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <p className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">Resources</p>
-              <ul className="space-y-3.5 text-sm">
-                {["Documentation", "Blog", "Community", "Support"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-white transition-colors duration-150">{item}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <p className="text-white font-semibold mb-5 text-xs uppercase tracking-widest">Company</p>
-              <ul className="space-y-3.5 text-sm">
-                {["About", "Careers", "Privacy Policy", "Terms"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-white transition-colors duration-150">{item}</a>
-                  </li>
-                ))}
-              </ul>
+            <div className="cf-curriculum-accordion">
+              {MODULES.map((mod, i) => (
+                <div
+                  key={mod.id}
+                  className={`cf-accordion-item${openModule === i ? " cf-open" : ""}`}
+                >
+                  <button
+                    className="cf-accordion-trigger"
+                    onClick={() => setOpenModule(openModule === i ? null : i)}
+                  >
+                    <div className="cf-accordion-left">
+                      <span className="cf-module-num">0{i + 1}</span>
+                      <span className="cf-module-title">{mod.title}</span>
+                    </div>
+                    <IconChevron />
+                  </button>
+                  {openModule === i && (
+                    <div className="cf-accordion-content">
+                      {mod.lessons.map((lesson, j) => (
+                        <div key={j} className="cf-lesson-row">
+                          <div className="cf-lesson-row-left">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <circle cx="7" cy="7" r="6" stroke="#d1d5db" strokeWidth="1" />
+                              <path d="M5 7L8 7M7 5.5L8.5 7L7 8.5" stroke="#9ca3af" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            {lesson.title}
+                          </div>
+                          <span className="cf-lesson-duration">{lesson.duration}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Bottom Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between border-t border-white/6 pt-8 gap-3 text-xs text-neutral-500">
-            <p>� {new Date().getFullYear()} CourseFlow, Inc. All rights reserved.</p>
-            <div className="flex items-center gap-5">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+      {/* ── INSTRUCTOR ── */}
+      <section id="about" className="cf-section cf-section-alt">
+        <div className="cf-container">
+          <div className="cf-instructor-layout">
+            <div className="cf-instructor-avatar-col">
+              <div className="cf-instructor-avatar">AC</div>
+              <div className="cf-instructor-companies">
+                <div className="cf-company-badge">Ex-Google</div>
+                <div className="cf-company-badge">Ex-Stripe</div>
+              </div>
             </div>
+            <div className="cf-instructor-content">
+              <div className="cf-section-tag">Lead Instructor</div>
+              <h2 className="cf-instructor-name">Alex Chen</h2>
+              <p className="cf-instructor-title">Senior Staff Engineer, formerly Google & Stripe</p>
+              <p className="cf-instructor-bio">
+                Alex spent 8 years as a software engineer at Google and Stripe, where he led
+                the infrastructure team that rebuilt Stripe's payments dashboard from the ground up.
+                He's spoken at React Summit and NodeConf, and has contributed to open-source projects
+                used by millions of developers.
+              </p>
+              <p className="cf-instructor-bio">
+                He started CourseFlow after becoming frustrated with the gap between what's taught
+                in courses and what's expected on the job. Every lesson here is based on real problems
+                he's had to solve in production.
+              </p>
+              <div className="cf-instructor-stats">
+                <div className="cf-instr-stat">
+                  <strong>8 years</strong>
+                  <span>at FAANG companies</span>
+                </div>
+                <div className="cf-instr-stat">
+                  <strong>40,000+</strong>
+                  <span>students taught</span>
+                </div>
+                <div className="cf-instr-stat">
+                  <strong>4.9 / 5</strong>
+                  <span>average rating</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section id="reviews" className="cf-section">
+        <div className="cf-container">
+          <div className="cf-section-header">
+            <div className="cf-section-tag">Reviews</div>
+            <h2 className="cf-section-title">Real outcomes. Real engineers.</h2>
+            <p className="cf-section-sub">From people who finished the course and shipped the work.</p>
+          </div>
+          <div className="cf-testimonials-grid">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="cf-testimonial-card">
+                <div className="cf-testimonial-rating">
+                  {Array.from({ length: t.rating }).map((_, j) => <IconStar key={j} />)}
+                </div>
+                <p className="cf-testimonial-text">"{t.text}"</p>
+                <div className="cf-testimonial-author">
+                  <div className="cf-testimonial-avatar">{t.initials}</div>
+                  <div>
+                    <div className="cf-author-name">{t.name}</div>
+                    <div className="cf-author-role">{t.role} · {t.timeAgo}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section id="pricing" className="cf-section cf-section-alt">
+        <div className="cf-container">
+          <div className="cf-section-header">
+            <div className="cf-section-tag">Pricing</div>
+            <h2 className="cf-section-title">Simple, honest pricing.</h2>
+            <p className="cf-section-sub">No upsells. No hidden fees. No dark patterns.</p>
+          </div>
+          <div className="cf-pricing-grid">
+            {PLANS.map((plan, i) => (
+              <div key={i} className={`cf-pricing-card${plan.featured ? " cf-pricing-featured" : ""}`}>
+                {plan.featured && <div className="cf-pricing-badge">Most Popular</div>}
+                <div className="cf-pricing-name">{plan.name}</div>
+                <div className="cf-pricing-price">
+                  <span className="cf-price-dollar">$</span>
+                  <span className="cf-price-amount">{plan.price}</span>
+                  <span className="cf-price-period">{plan.period}</span>
+                </div>
+                <p className="cf-pricing-desc">{plan.description}</p>
+                <ul className="cf-pricing-features">
+                  {plan.features.map((f, j) => (
+                    <li key={j}>
+                      <IconCheck accent={plan.featured} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button className={`${plan.featured ? "cf-btn-primary" : "cf-btn-outline"} cf-btn-full`}>
+                  {plan.cta}
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="cf-pricing-note">
+            All plans include a 30-day money-back guarantee. Student discount available with .edu email.
+          </p>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="cf-section">
+        <div className="cf-container cf-faq-layout">
+          <div className="cf-faq-left">
+            <div className="cf-section-tag">FAQ</div>
+            <h2 className="cf-section-title cf-section-title-left">Common questions.</h2>
+            <p className="cf-section-sub cf-section-sub-left">
+              Anything else? Email us at{" "}
+              <a href="mailto:hello@courseflow.dev" className="cf-text-link">
+                hello@courseflow.dev
+              </a>
+            </p>
+          </div>
+          <div className="cf-faq-accordion">
+            {FAQS.map((faq, i) => (
+              <div
+                key={i}
+                className={`cf-faq-item${openFaq === i ? " cf-open" : ""}`}
+              >
+                <button
+                  className="cf-faq-trigger"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <span>{faq.q}</span>
+                  <IconChevron />
+                </button>
+                {openFaq === i && (
+                  <div className="cf-faq-answer">{faq.a}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
+      <section className="cf-final-cta">
+        <div className="cf-container cf-cta-inner">
+          <h2 className="cf-cta-headline">
+            The gap between where you are<br />
+            and where you want to be<br />
+            <em>is a curriculum away.</em>
+          </h2>
+          <p className="cf-cta-sub">
+            40,000 engineers have already made the move. The next step is yours.
+          </p>
+          <div className="cf-cta-actions">
+            <a href="/signup" className="cf-btn-white cf-btn-lg">
+              Enroll Now — Start Today
+            </a>
+            <span className="cf-cta-note">30-day refund guarantee · Lifetime access</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="cf-footer">
+        <div className="cf-container">
+          <div className="cf-footer-top">
+            <div className="cf-footer-brand">
+              <a href="/" className="cf-logo">
+                <Logo />
+                <span className="cf-logo-text">CourseFlow</span>
+              </a>
+              <p className="cf-footer-tagline">
+                Rigorous courses for engineers<br />who want to grow fast.
+              </p>
+            </div>
+            <div className="cf-footer-links">
+              <div className="cf-footer-col">
+                <div className="cf-footer-col-title">Product</div>
+                <a href="#">Courses</a>
+                <a href="#">Pricing</a>
+                <a href="#">Reviews</a>
+                <a href="#">Instructors</a>
+              </div>
+              <div className="cf-footer-col">
+                <div className="cf-footer-col-title">Company</div>
+                <a href="#">About</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+                <a href="#">Press</a>
+              </div>
+              <div className="cf-footer-col">
+                <div className="cf-footer-col-title">Support</div>
+                <a href="mailto:hello@courseflow.dev">Contact</a>
+                <a href="#">Help Center</a>
+                <a href="#">Student Discount</a>
+                <a href="#">Teams</a>
+              </div>
+              <div className="cf-footer-col">
+                <div className="cf-footer-col-title">Legal</div>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+              </div>
+            </div>
+          </div>
+          <div className="cf-footer-bottom">
+            <span>© 2026 CourseFlow, Inc. All rights reserved.</span>
+            <span>hello@courseflow.dev</span>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

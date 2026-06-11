@@ -106,6 +106,3 @@ This project is licensed under the ISC License - see the package.json files for 
 **Sachin Chaurasiya**
 
 ---
-
-*Built with ❤️ using modern web technologies*</content>
-<parameter name="filePath">c:\CodeBase\CourseFlow\README.md
