@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Testimonials } from "@/components/ui/unique-testimonial";
 import "./LandingPage.css";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
+
+// words that rotate after "you want ___" in the hero headline
+const ROTATING_WORDS = ["next", "love", "deserve", "dream of", "actually want"];
+
+// real profile photos for the hero social-proof avatar stack
+const HERO_AVATARS = [
+  "https://images.unsplash.com/photo-1564490215983-296e5f56b623?w=120&q=80&fit=crop&crop=faces",
+  "https://images.unsplash.com/photo-1609770653328-a4d1dd377970?w=120&q=80&fit=crop&crop=faces",
+  "https://images.unsplash.com/photo-1582828835690-22a88e8dd257?w=120&q=80&fit=crop&crop=faces",
+  "https://images.unsplash.com/photo-1533128361669-69c065857a13?w=120&q=80&fit=crop&crop=faces",
+];
 
 const COURSES = [
   {
     id: 1,
     title: "Full-Stack Web Development with React & Node",
-    instructor: "Alex Chen",
+    instructor: "Sachin Chaurasiya",
     duration: "42 hours",
     rating: 4.9,
     reviews: 2847,
-    price: 89,
+    price: 899,
     tag: "Bestseller",
     level: "Intermediate",
   },
@@ -22,7 +35,7 @@ const COURSES = [
     duration: "38 hours",
     rating: 4.8,
     reviews: 1923,
-    price: 99,
+    price: 799,
     tag: "New",
     level: "Beginner",
   },
@@ -33,7 +46,7 @@ const COURSES = [
     duration: "24 hours",
     rating: 4.9,
     reviews: 1456,
-    price: 119,
+    price: 999,
     tag: null,
     level: "Advanced",
   },
@@ -81,37 +94,10 @@ const MODULES = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    initials: "SM",
-    name: "Sarah Mitchell",
-    role: "Frontend Engineer at Shopify",
-    timeAgo: "2 months ago",
-    text: "I went from writing jQuery spaghetti to shipping production React at a company I actually wanted to work for. The system design module alone was worth the price — my interviewers kept commenting on how I talked about architecture.",
-    rating: 5,
-  },
-  {
-    initials: "JO",
-    name: "James Okonkwo",
-    role: "Software Engineer at Stripe",
-    timeAgo: "4 months ago",
-    text: "Three months after completing this course I was at Stripe. The curriculum doesn't waste your time — every lesson is dense with real patterns you'll encounter on the job. No fluff, no padding.",
-    rating: 5,
-  },
-  {
-    initials: "EV",
-    name: "Elena Vasquez",
-    role: "Full-Stack Developer, Freelance",
-    timeAgo: "1 month ago",
-    text: "I was skeptical about online courses but this one is different. The projects are portfolio-ready and have helped me land contracts. The community Slack is surprisingly active for a recorded course.",
-    rating: 5,
-  },
-];
-
 const PLANS = [
   {
     name: "Single Course",
-    price: 89,
+    price: 899,
     period: "one-time",
     description: "Full access to one course of your choice.",
     features: [
@@ -125,7 +111,7 @@ const PLANS = [
   },
   {
     name: "All-Access",
-    price: 29,
+    price: 499,
     period: "per month",
     description: "Unlimited access to every course on the platform.",
     features: [
@@ -140,7 +126,7 @@ const PLANS = [
   },
   {
     name: "Team",
-    price: 49,
+    price: 799,
     period: "per seat / month",
     description: "For teams of 5 or more with centralized billing.",
     features: [
@@ -224,6 +210,16 @@ const Logo = () => (
 export default function LandingPage() {
   const [openModule, setOpenModule] = useState<number | null>(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeBenefit, setActiveBenefit] = useState<number | null>(null);
+  const [wordIndex, setWordIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setWordIndex((i) => (i + 1) % ROTATING_WORDS.length),
+      1600
+    );
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div className="cf-root">
@@ -250,144 +246,62 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section className="cf-hero">
+        <div className="cf-hero-bg" aria-hidden="true">
+          <div className="cf-hero-glow cf-hero-glow-1" />
+          <div className="cf-hero-glow cf-hero-glow-2" />
+        </div>
         <div className="cf-container cf-hero-inner">
           <div className="cf-hero-text">
-            <div className="cf-badge">
-              <span className="cf-badge-dot" />
-              Trusted by 40,000+ engineers
-            </div>
             <h1 className="cf-hero-headline">
-              Learn the skills<br />
-              that <em>actually</em><br />
-              get you hired.
+              Courses for the <em>job</em><br />
+              you want{" "}
+              <span className="cf-rotating-word">
+                <AnimatePresence mode="wait">
+                  <motion.em
+                    key={wordIndex}
+                    initial={{ y: "0.55em", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: "-0.55em", opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {ROTATING_WORDS[wordIndex]}
+                  </motion.em>
+                </AnimatePresence>
+              </span>
+              .
             </h1>
             <p className="cf-hero-sub">
-              Structured, rigorous courses taught by engineers who've shipped at
-              companies you know. No fluff. No filler. Just the depth that matters.
+              We build courses with engineers who do this work every day 
+              the kind that cover the messy parts most tutorials skip. Pick a
+              topic, work through it at your pace, and keep it for good.
             </p>
             <div className="cf-hero-actions">
-              <a href="/signup" className="cf-btn-primary cf-btn-lg">Enroll Now</a>
-              <a href="#curriculum" className="cf-btn-outline cf-btn-lg">View Curriculum</a>
+              <a href="/signup" className="cf-btn-primary cf-btn-lg">
+                Browse Courses <IconArrow />
+              </a>
+              <a href="#curriculum" className="cf-btn-outline cf-btn-lg">See the Curriculum</a>
             </div>
-            <div className="cf-hero-proof">
-              <div className="cf-proof-stars">
-                {[1,2,3,4,5].map(i => <IconStar key={i} />)}
+            <div className="cf-hero-social">
+              <div className="cf-avatar-stack">
+                {HERO_AVATARS.map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    className="cf-avatar-stack-item"
+                    style={{ zIndex: 4 - i }}
+                  />
+                ))}
+                <span className="cf-avatar-stack-more">40k+</span>
               </div>
-              <span className="cf-proof-text">4.9 from 6,200+ reviews</span>
-              <span className="cf-proof-sep">·</span>
-              <span className="cf-proof-text">30-day refund guarantee</span>
-            </div>
-          </div>
-
-          {/* Dashboard mockup */}
-          <div className="cf-hero-mockup">
-            {/* Floating rating card */}
-            <div className="cf-float-card cf-float-card-top">
-              <div className="cf-float-card-icon">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 1.5L9.8 6H14.5L10.5 8.8L12 13.5L8 10.8L4 13.5L5.5 8.8L1.5 6H6.2L8 1.5Z" fill="#1d4ed8"/>
-                </svg>
-              </div>
-              <div>
-                <div className="cf-float-card-label">Top Rated Course</div>
-                <div className="cf-float-card-sub">4.9 · 6,200+ reviews</div>
-              </div>
-            </div>
-            <div className="cf-mockup-window">
-              <div className="cf-mockup-titlebar">
-                <div className="cf-mockup-dots">
-                  <span /><span /><span />
+              <div className="cf-hero-social-text">
+                <div className="cf-hero-social-stars">
+                  {Array.from({ length: 5 }).map((_, j) => <IconStar key={j} />)}
+                  <strong>4.9</strong>
                 </div>
-                <span className="cf-mockup-url">courseflow.dev / dashboard</span>
+                <span>Loved by 40,000+ engineers</span>
               </div>
-              <div className="cf-mockup-body">
-                <div className="cf-mockup-sidebar">
-                  <div className="cf-mockup-sidebar-title">My Courses</div>
-                  <div className="cf-mockup-course-item cf-active">
-                    <span className="cf-course-dot" />
-                    Full-Stack React
-                  </div>
-                  <div className="cf-mockup-course-item">
-                    <span className="cf-course-dot" />
-                    System Design
-                  </div>
-                  <div className="cf-mockup-course-item">
-                    <span className="cf-course-dot" />
-                    Data Science
-                  </div>
-                  <div className="cf-mockup-sidebar-section">Progress</div>
-                  <div className="cf-progress-item">
-                    <div className="cf-progress-label">
-                      <span>React & Node</span><span>68%</span>
-                    </div>
-                    <div className="cf-progress-bar">
-                      <div className="cf-progress-fill" style={{ width: "68%" }} />
-                    </div>
-                  </div>
-                  <div className="cf-progress-item">
-                    <div className="cf-progress-label">
-                      <span>System Design</span><span>24%</span>
-                    </div>
-                    <div className="cf-progress-bar">
-                      <div className="cf-progress-fill" style={{ width: "24%" }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="cf-mockup-content">
-                  <div className="cf-mockup-lesson-header">
-                    <div className="cf-lesson-tag">Module 2 · Lesson 4</div>
-                    <div className="cf-lesson-title">Building forms with validation</div>
-                  </div>
-                  <div className="cf-mockup-video">
-                    <div className="cf-video-placeholder">
-                      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-                        <circle cx="17" cy="17" r="16" stroke="#1d4ed8" strokeWidth="1.5" />
-                        <path d="M14 12L23 17L14 22V12Z" fill="#1d4ed8" />
-                      </svg>
-                      <span>52 min · HD video</span>
-                    </div>
-                  </div>
-                  <div className="cf-mockup-chapters">
-                    <div className="cf-chapter-item cf-chapter-done">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" />
-                        <path d="M4 7L6 9L10 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                      useState deep dive
-                    </div>
-                    <div className="cf-chapter-item cf-chapter-done">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" />
-                        <path d="M4 7L6 9L10 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                      useEffect patterns
-                    </div>
-                    <div className="cf-chapter-item cf-chapter-active">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <circle cx="7" cy="7" r="7" fill="#1d4ed8" fillOpacity="0.12" />
-                        <circle cx="7" cy="7" r="3" fill="#1d4ed8" />
-                      </svg>
-                      Form validation (current)
-                    </div>
-                    <div className="cf-chapter-item">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <circle cx="7" cy="7" r="6.5" stroke="#d1d5db" />
-                      </svg>
-                      Custom hooks
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Floating enrollment notification */}
-            <div className="cf-float-card cf-float-card-bottom">
-              <div className="cf-float-avatar">SM</div>
-              <div>
-                <div className="cf-float-card-label">Sarah just enrolled</div>
-                <div className="cf-float-card-sub">Full-Stack React · 2 min ago</div>
-              </div>
-              <div className="cf-float-live-dot" />
             </div>
           </div>
         </div>
@@ -419,10 +333,14 @@ export default function LandingPage() {
           </div>
           <div className="cf-trust-logos">
             <span className="cf-trust-label">Our students work at</span>
-            <div className="cf-logos">
-              {["Stripe", "Shopify", "Vercel", "Notion", "Linear", "GitHub"].map((co) => (
-                <span key={co} className="cf-company-logo">{co}</span>
-              ))}
+            <div className="cf-logos-marquee">
+              <div className="cf-logos-track">
+                {["Stripe", "Shopify", "Vercel", "Notion", "Linear", "GitHub", "Airbnb", "Figma"].concat(
+                  ["Stripe", "Shopify", "Vercel", "Notion", "Linear", "GitHub", "Airbnb", "Figma"]
+                ).map((co, i) => (
+                  <span key={i} className="cf-company-logo" aria-hidden={i >= 8}>{co}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -438,32 +356,38 @@ export default function LandingPage() {
               Every course is structured around real skills with projects you can ship.
             </p>
           </div>
-          <div className="cf-courses-grid">
-            {COURSES.map((course) => (
-              <div key={course.id} className="cf-course-card">
-                <div className="cf-course-card-header">
-                  {course.tag && <span className="cf-course-tag">{course.tag}</span>}
-                  <span className="cf-course-level">{course.level}</span>
+          <div className="cf-courses-marquee">
+            <div className="cf-courses-track">
+              {COURSES.concat(COURSES).map((course, i) => (
+                <div
+                  key={i}
+                  className="cf-course-card"
+                  aria-hidden={i >= COURSES.length}
+                >
+                  <div className="cf-course-card-header">
+                    {course.tag && <span className="cf-course-tag">{course.tag}</span>}
+                    <span className="cf-course-level">{course.level}</span>
+                  </div>
+                  <h3 className="cf-course-title">{course.title}</h3>
+                  <p className="cf-course-instructor">by {course.instructor}</p>
+                  <div className="cf-course-meta">
+                    <span className="cf-course-duration">
+                      <IconClock />
+                      {course.duration}
+                    </span>
+                    <span className="cf-course-rating">
+                      <IconStar />
+                      {course.rating}{" "}
+                      <span className="cf-rating-count">({course.reviews.toLocaleString()})</span>
+                    </span>
+                  </div>
+                  <div className="cf-course-footer">
+                    <span className="cf-course-price">₹{course.price}</span>
+                    <button className="cf-btn-primary cf-btn-sm">Enroll Now</button>
+                  </div>
                 </div>
-                <h3 className="cf-course-title">{course.title}</h3>
-                <p className="cf-course-instructor">by {course.instructor}</p>
-                <div className="cf-course-meta">
-                  <span className="cf-course-duration">
-                    <IconClock />
-                    {course.duration}
-                  </span>
-                  <span className="cf-course-rating">
-                    <IconStar />
-                    {course.rating}{" "}
-                    <span className="cf-rating-count">({course.reviews.toLocaleString()})</span>
-                  </span>
-                </div>
-                <div className="cf-course-footer">
-                  <span className="cf-course-price">${course.price}</span>
-                  <button className="cf-btn-primary cf-btn-sm">Enroll Now</button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           <div className="cf-courses-footer">
             <a href="#" className="cf-link-arrow">
@@ -476,11 +400,17 @@ export default function LandingPage() {
       {/* ── WHY CHOOSE US ── */}
       <section className="cf-section cf-section-alt">
         <div className="cf-container">
-          <div className="cf-section-header">
+          <motion.div
+            className="cf-section-header"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="cf-section-tag">Why CourseFlow</div>
             <h2 className="cf-section-title">The difference is in the depth.</h2>
-          </div>
-          <div className="cf-benefits-grid">
+          </motion.div>
+          <motion.div className="cf-benefits-grid" layout>
             {[
               {
                 icon: (
@@ -491,6 +421,7 @@ export default function LandingPage() {
                 ),
                 title: "Practical, job-ready skills",
                 desc: "Courses are structured around what senior engineers actually need to know — not certification checkboxes or contrived toy projects.",
+                detail: "Each module ends with a project you'd actually build on the job — a rate limiter, an auth flow, a deploy pipeline — reviewed against the patterns real teams ship to production.",
               },
               {
                 icon: (
@@ -502,6 +433,7 @@ export default function LandingPage() {
                 ),
                 title: "Industry-relevant content",
                 desc: "The syllabus is reviewed quarterly with input from engineers at Stripe, Vercel, and similar companies. When practices change, we update.",
+                detail: "We track changelogs, RFCs, and framework releases. When a major version ships or a best practice shifts, the affected lessons are re-recorded — not patched with a footnote.",
               },
               {
                 icon: (
@@ -513,6 +445,7 @@ export default function LandingPage() {
                 ),
                 title: "Lifetime access, forever",
                 desc: "Pay once and keep the course permanently — including all future updates. No re-purchase when a new version ships.",
+                detail: "Buy once and the course is yours — including every future update, new module, and re-recording. No subscription creep, no 'upgrade to keep watching' the day a new version lands.",
               },
               {
                 icon: (
@@ -523,15 +456,64 @@ export default function LandingPage() {
                 ),
                 title: "Active community",
                 desc: "Every enrollment includes access to a Slack community with 12,000+ members. Ask questions, share projects, find collaborators.",
+                detail: "A 12,000-member Slack where instructors answer questions daily, students pair on projects, and hiring managers post roles. Your access stays live for as long as you own the course.",
               },
-            ].map((b, i) => (
-              <div key={i} className="cf-benefit-card">
-                <div className="cf-benefit-icon">{b.icon}</div>
-                <h3 className="cf-benefit-title">{b.title}</h3>
-                <p className="cf-benefit-desc">{b.desc}</p>
-              </div>
-            ))}
-          </div>
+            ].map((b, i) => {
+              const isActive = activeBenefit === i;
+              return (
+                <motion.div
+                  key={i}
+                  layout
+                  onClick={() => setActiveBenefit(isActive ? null : i)}
+                  className={`cf-benefit-card${isActive ? " cf-benefit-active" : ""}`}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  whileHover={isActive ? undefined : { y: -4 }}
+                  transition={{
+                    layout: { type: "spring", stiffness: 280, damping: 32, mass: 0.9 },
+                    default: { duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                >
+                  <motion.div
+                    layout="position"
+                    className="cf-benefit-icon"
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.4, delay: i * 0.1 + 0.15, ease: "backOut" }}
+                  >
+                    {b.icon}
+                  </motion.div>
+                  <motion.h3 layout="position" className="cf-benefit-title">
+                    {b.title}
+                    <span className="cf-benefit-toggle" aria-hidden>
+                      {isActive ? "–" : "+"}
+                    </span>
+                  </motion.h3>
+                  <motion.p layout="position" className="cf-benefit-desc">{b.desc}</motion.p>
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {isActive && (
+                      <motion.div
+                        layout="position"
+                        className="cf-benefit-detail"
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{
+                          layout: { type: "spring", stiffness: 280, damping: 32, mass: 0.9 },
+                          opacity: { duration: 0.28, ease: "easeOut", delay: 0.06 },
+                          y: { duration: 0.28, ease: "easeOut", delay: 0.06 },
+                        }}
+                      >
+                        <p>{b.detail}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
       </section>
 
@@ -599,31 +581,34 @@ export default function LandingPage() {
         <div className="cf-container">
           <div className="cf-instructor-layout">
             <div className="cf-instructor-avatar-col">
-              <div className="cf-instructor-avatar">AC</div>
+              <img
+                className="cf-instructor-avatar"
+                src="https://sachinchaurasiya.xyz/sachinActivites/sachinpic.png"
+                alt="Sachin Chaurasiya"
+              />
               <div className="cf-instructor-companies">
-                <div className="cf-company-badge">Ex-Google</div>
-                <div className="cf-company-badge">Ex-Stripe</div>
+                <span className="cf-company-badge">Instructor</span>
               </div>
             </div>
             <div className="cf-instructor-content">
               <div className="cf-section-tag">Lead Instructor</div>
-              <h2 className="cf-instructor-name">Alex Chen</h2>
-              <p className="cf-instructor-title">Senior Staff Engineer, formerly Google & Stripe</p>
+              <h2 className="cf-instructor-name">Sachin Chaurasiya</h2>
+              <p className="cf-instructor-title">Full-Stack &amp; AI Engineer · RAG &amp; Fine-Tuning · Educator</p>
               <p className="cf-instructor-bio">
-                Alex spent 8 years as a software engineer at Google and Stripe, where he led
-                the infrastructure team that rebuilt Stripe's payments dashboard from the ground up.
-                He's spoken at React Summit and NodeConf, and has contributed to open-source projects
-                used by millions of developers.
+                Sachin is a full-stack and AI engineer with deep expertise across modern web
+                development and applied AI — building production RAG systems and fine-tuning
+                large language models. He's worked in industry at Vizuara AI Labs and Aaradhy
+                Tech, and takes on freelance engineering projects.
               </p>
               <p className="cf-instructor-bio">
-                He started CourseFlow after becoming frustrated with the gap between what's taught
-                in courses and what's expected on the job. Every lesson here is based on real problems
-                he's had to solve in production.
+                He's also a professional teacher who has led technical communities and societies
+                across several colleges, mentoring students and helping them ship real projects.
+                Every lesson here is drawn from problems he's actually solved in production.
               </p>
               <div className="cf-instructor-stats">
                 <div className="cf-instr-stat">
-                  <strong>8 years</strong>
-                  <span>at FAANG companies</span>
+                  <strong>Full-Stack + AI</strong>
+                  <span>RAG &amp; fine-tuning</span>
                 </div>
                 <div className="cf-instr-stat">
                   <strong>40,000+</strong>
@@ -647,57 +632,61 @@ export default function LandingPage() {
             <h2 className="cf-section-title">Real outcomes. Real engineers.</h2>
             <p className="cf-section-sub">From people who finished the course and shipped the work.</p>
           </div>
-          <div className="cf-testimonials-grid">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="cf-testimonial-card">
-                <div className="cf-testimonial-rating">
-                  {Array.from({ length: t.rating }).map((_, j) => <IconStar key={j} />)}
-                </div>
-                <p className="cf-testimonial-text">"{t.text}"</p>
-                <div className="cf-testimonial-author">
-                  <div className="cf-testimonial-avatar">{t.initials}</div>
-                  <div>
-                    <div className="cf-author-name">{t.name}</div>
-                    <div className="cf-author-role">{t.role} · {t.timeAgo}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Testimonials />
         </div>
       </section>
 
       {/* ── PRICING ── */}
       <section id="pricing" className="cf-section cf-section-alt">
         <div className="cf-container">
-          <div className="cf-section-header">
+          <motion.div
+            className="cf-section-header"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="cf-section-tag">Pricing</div>
             <h2 className="cf-section-title">Simple, honest pricing.</h2>
             <p className="cf-section-sub">No upsells. No hidden fees. No dark patterns.</p>
-          </div>
+          </motion.div>
           <div className="cf-pricing-grid">
             {PLANS.map((plan, i) => (
-              <div key={i} className={`cf-pricing-card${plan.featured ? " cf-pricing-featured" : ""}`}>
+              <motion.div
+                key={i}
+                className={`cf-pricing-card${plan.featured ? " cf-pricing-featured" : ""}`}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -6, transition: { duration: 0.2, ease: "easeOut" } }}
+              >
                 {plan.featured && <div className="cf-pricing-badge">Most Popular</div>}
                 <div className="cf-pricing-name">{plan.name}</div>
                 <div className="cf-pricing-price">
-                  <span className="cf-price-dollar">$</span>
+                  <span className="cf-price-dollar">₹</span>
                   <span className="cf-price-amount">{plan.price}</span>
                   <span className="cf-price-period">{plan.period}</span>
                 </div>
                 <p className="cf-pricing-desc">{plan.description}</p>
                 <ul className="cf-pricing-features">
                   {plan.features.map((f, j) => (
-                    <li key={j}>
+                    <motion.li
+                      key={j}
+                      initial={{ opacity: 0, x: -8 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.35, delay: i * 0.12 + 0.25 + j * 0.06 }}
+                    >
                       <IconCheck accent={plan.featured} />
                       {f}
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
                 <button className={`${plan.featured ? "cf-btn-primary" : "cf-btn-outline"} cf-btn-full`}>
                   {plan.cta}
                 </button>
-              </div>
+              </motion.div>
             ))}
           </div>
           <p className="cf-pricing-note">

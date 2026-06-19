@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { LoginService } from "./login.service.js";
 import { loginValidation } from "./login.validation.js";
 import type { Request, Response } from "express";
-import { logger } from "../../../utils/logger/logger.js";
 
 
 //impliment the signin with google in the future

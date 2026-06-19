@@ -1,8 +1,8 @@
 import express from "express";
-import { logger } from "./utils/logger/logger.ts";
+import { logger } from "./utils/logger/logger.js";
 import { pinoHttp } from "pino-http";
 import { connectToDatabase } from "./database/index.js";
-import authRouter from "./Route/authRouter.ts";
+import authRouter from "./Route/authRouter.js";
 const app = express();
 app.use(express.json());
 const port = `3000`;
@@ -31,6 +31,9 @@ async function connectToDatabaseAndStartServer() {
 connectToDatabaseAndStartServer();
 
 app.use("/api/v1/auth", authRouter);
+app.use("api/dashboard/student")
+app.use("api/dashboard/admin")
+
 
 app.listen(port, () => {
   logger.info(`Server is running on port ${port}`);
