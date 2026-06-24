@@ -4,4 +4,11 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
+  ,
+// ...existing code...
+
+  "compilerOptions": {
+    // ...existing code...
+    "types": ["node"]
+  }
 }

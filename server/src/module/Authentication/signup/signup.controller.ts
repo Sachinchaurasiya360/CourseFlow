@@ -17,9 +17,7 @@ export class SignupController {
         });
       }
       const { name, email, password } = validationResult.data;
-      logger.info(name)
       const isUserExist = await this.signupService.isEmailUnique(email);
-      logger.info(isUserExist)
       if (isUserExist) {
         return res.status(409).json({
           success: false,
@@ -36,11 +34,13 @@ export class SignupController {
       return res.status(201).json({
         success: true,
         message: "User created successfully",
-        data: result,
       });
     } catch (error) {
-      logger.info("Error occurred during signup process");
-      throw error;
+      return res.status(500).json({
+        message:"Internal server error",
+        success:false
+      })
+      
     }
   }
 }

@@ -1,4 +1,5 @@
-import { User } from "../../../database/index.js";
+import { User } from "../../../database/model/users.js";
+
 import bcrypt from "bcrypt";
 export class LoginService {
   async isEmailExists(email: string): Promise<boolean> {

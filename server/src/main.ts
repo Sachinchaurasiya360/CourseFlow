@@ -3,8 +3,10 @@ import { logger } from "./utils/logger/logger.js";
 import { pinoHttp } from "pino-http";
 import { connectToDatabase } from "./database/index.js";
 import authRouter from "./Route/authRouter.js";
+import cookieParser from "cookie-parser";
 const app = express();
 app.use(express.json());
+app.use(cookieParser())
 const port = `3000`;
 
 app.use(
@@ -31,8 +33,8 @@ async function connectToDatabaseAndStartServer() {
 connectToDatabaseAndStartServer();
 
 app.use("/api/v1/auth", authRouter);
-app.use("api/dashboard/student")
-app.use("api/dashboard/admin")
+// app.use("api/dashboard/student")
+// app.use("api/dashboard/admin")
 
 
 app.listen(port, () => {

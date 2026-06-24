@@ -1,18 +1,21 @@
-import { Course } from "../../database/index.js";
-import {  type courseCreateValidationType } from "./course.validation.js";
+import { Course,CourseContent } from "../../database/model/courses.js";
+
+import { type courseCreateType,type moduleCreateTypes, type courseContentTypes } from "./course.validation.js";
 
 export class CourseService {
-  async createCourse(courseData: courseCreateValidationType) {
+  async createCourse(courseData: courseCreateType, userId: string) {
     try {
-      return await Course.create(courseData);
-    } catch (error) {
-      throw error;
-    } 
+      return await Course.create({ ...courseData, createdBy: userId });
+    } catch (error) {}
   }
-  async updateCourse(courseData:courseCreateValidationType){
+  async updateCourse(courseData: courseCreateType) {
     try {
-    } catch (error) {
-        
-    }
+    } catch (error) {}
+  }
+  async createModule(data:moduleCreateTypes){
+    return CourseContent.create(data)
+  }
+  async crateContentInsideModule(data:courseContentTypes){
+    return 
   }
 }

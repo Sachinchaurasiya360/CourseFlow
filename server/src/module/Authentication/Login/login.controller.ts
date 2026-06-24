@@ -38,7 +38,7 @@ export class LoginController {
         });
       }
       const token = jwt.sign(
-        {
+        { id:getUser._id,
           email: getUser.email,
           name: getUser.name,
         },

@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
-import { User } from "../../../database/index.js";
-
+import { User } from "../../../database/model/users.js";
 export class SignupService {
     
   async hashPassword(password: string): Promise<string> {
