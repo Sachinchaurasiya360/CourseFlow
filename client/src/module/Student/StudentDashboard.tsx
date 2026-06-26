@@ -1,4 +1,4 @@
-export default function studentDashboard() {
+export default function StudentDashboard() {
     return (
         <div>
             <h1>Student Dashboard</h1>

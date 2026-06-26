@@ -17,7 +17,7 @@ export class LoginService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     return user;
   }
 }

@@ -4,7 +4,7 @@ export const createCourseValidator = z.object({
   courseName: z.string().min(2).max(30),
   category: z.string(),
   courseDesciption: z.string().min(10).max(30),
-  coursePrice: z.number().min(0).max(9999999),
+  coursePrice: z.string().min(0).max(9999999),
   thumbnailURL: z.url().optional(),
   highlight: z.array(z.string()),
 });

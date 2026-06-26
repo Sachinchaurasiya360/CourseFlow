@@ -56,7 +56,7 @@ export default function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <div className="min-h-screen bg-white font-jakarta text-slate-900">
+    <div className="bg-white font-jakarta text-slate-900">
       {/* ── NAVBAR ── */}
       <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
@@ -79,7 +79,7 @@ export default function AuthShell({
       </header>
 
       {/* ── BODY: brand panel + form ── */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 lg:grid-cols-2">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 lg:min-h-160 lg:grid-cols-2">
         {/* Left: editorial brand panel (desktop only) */}
         <section className="relative hidden overflow-hidden bg-brand-dark px-12 py-16 lg:flex lg:flex-col lg:justify-between">
           {/* dotted texture */}

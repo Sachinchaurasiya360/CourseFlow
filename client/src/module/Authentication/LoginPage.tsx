@@ -7,16 +7,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useUserStore } from "@/store/useStore";
 
 interface LoginFormData {
   email: string;
   password: string;
 }
 
-function validate(form: LoginFormData): Partial<Record<keyof LoginFormData, string>> {
+function validate(
+  form: LoginFormData,
+): Partial<Record<keyof LoginFormData, string>> {
   const errors: Partial<Record<keyof LoginFormData, string>> = {};
 
-  
   if (!form.password) {
     errors.password = "Password is required";
   }
@@ -56,14 +58,22 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      
-      await apiClient.post("/api/v1/auth/login", {
+      await apiClient.post("/auth/login", {
         email: formData.email.trim(),
         password: formData.password,
       });
 
       toast.success("Logged in successfully.");
-      navigate("/");
+
+      const getUser = await apiClient.get("/auth/me");
+      const setUser = useUserStore.getState().setUser;
+      setUser(getUser.data);
+
+      if (getUser?.data?.role === "STUDENT") {
+        navigate("/dashboard");
+      } else {
+        navigate("/admindashboard");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setFormError(

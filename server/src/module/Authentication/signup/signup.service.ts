@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { User } from "../../../database/model/users.js";
+
 export class SignupService {
     
   async hashPassword(password: string): Promise<string> {
@@ -10,7 +11,7 @@ export class SignupService {
 
   async isEmailUnique(email: string): Promise<boolean> {
     const isEmailExists = await User.exists({ email });
-    return isEmailExists;
+    return !! isEmailExists;
   }
   async createUser(name: string, email: string, password: string) {
     const createdUser = await User.create({

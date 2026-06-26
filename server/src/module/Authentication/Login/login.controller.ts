@@ -3,7 +3,6 @@ import { LoginService } from "./login.service.js";
 import { loginValidation } from "./login.validation.js";
 import type { Request, Response } from "express";
 
-
 //impliment the signin with google in the future
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
@@ -18,6 +17,7 @@ export class LoginController {
           errors: validationResult.error,
         });
       }
+
       const { email, password } = validationResult.data;
 
       const getUser = await this.loginService.getUserByEmail(email);
@@ -27,6 +27,7 @@ export class LoginController {
           message: "User not found",
         });
       }
+
       const isPasswordMatch = await this.loginService.comparePassword(
         password,
         getUser.password as string,
@@ -38,9 +39,11 @@ export class LoginController {
         });
       }
       const token = jwt.sign(
-        { id:getUser._id,
+        {
+          id: getUser._id,
           email: getUser.email,
           name: getUser.name,
+          role: getUser.role,
         },
         process.env.JWT_SECRET || "defaultSecretKey",
         {
@@ -50,7 +53,7 @@ export class LoginController {
 
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false, //Only for local
         sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
       });
@@ -63,6 +66,7 @@ export class LoginController {
       return res.status(500).json({
         success: false,
         message: "Internal server error",
+        error: error,
       });
     }
   }

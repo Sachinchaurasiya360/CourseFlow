@@ -7,16 +7,15 @@ export class SignupController {
 
   async signup(req: Request, res: Response) {
     try {
-      const validationResult = signupValidation.safeParse(req.body);
-      logger.info(validationResult.data)
-      if (!validationResult.success) {
+      const validateInput = signupValidation.safeParse(req.body);
+      if (!validateInput.success) {
         return res.status(400).json({
           success: false,
           message: "Validation failed",
-          errors: validationResult.error.flatten().fieldErrors  ,
+          errors: validateInput.error.flatten().fieldErrors  ,
         });
       }
-      const { name, email, password } = validationResult.data;
+      const { name, email, password } = validateInput.data;
       const isUserExist = await this.signupService.isEmailUnique(email);
       if (isUserExist) {
         return res.status(409).json({

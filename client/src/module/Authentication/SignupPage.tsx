@@ -14,24 +14,6 @@ interface SignupFormData {
   password: string;
 }
 
-// Mirrors the server-side zod rules (signup.validation.ts) so we catch bad
-// input before hitting the network.
-function validate(form: SignupFormData): Partial<Record<keyof SignupFormData, string>> {
-  const errors: Partial<Record<keyof SignupFormData, string>> = {};
-
-  if (!form.name.trim()) {
-    errors.name = "Name is required";
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Enter a valid email address";
-  }
-  if (form.password.length < 6 || form.password.length > 20) {
-    errors.password = "Password must be 6–20 characters";
-  }
-
-  return errors;
-}
-
 export default function SignupPage() {
   const navigate = useNavigate();
 
@@ -47,7 +29,6 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // One generic handler for every field, keyed by the input's `name`.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -59,12 +40,6 @@ export default function SignupPage() {
     e.preventDefault();
     setFormError("");
 
-    const errors = validate(formData);
-    setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-
     setLoading(true);
     try {
       await apiClient.post("/api/v1/auth/signup", {
@@ -73,14 +48,11 @@ export default function SignupPage() {
         password: formData.password,
       });
 
-      // Signup does not log the user in (the server issues a session cookie only
-      // on login), so send them to the login page with a success toast.
       toast.success("Account created. Please log in.");
       navigate("/login");
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Surface the server's message (e.g. 409 "User already exists",
-        // 400 "Validation failed") when present.
+        
         setFormError(
           error.response?.data?.message ?? "Signup failed. Please try again.",
         );
@@ -88,7 +60,6 @@ export default function SignupPage() {
         setFormError("Something went wrong. Please try again.");
       }
     } finally {
-      // Always clears loading, on both success and failure.
       setLoading(false);
     }
   };

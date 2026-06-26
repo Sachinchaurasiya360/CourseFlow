@@ -1,43 +1,86 @@
+import mongoose from "mongoose";
 
-import mongoose from "mongoose"
+const courseSchema = new mongoose.Schema(
+  {
+    courseName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    courseDescription: {
+      type: String,
+      required: true,
+    },
+    coursePrice: {
+      type: Number,
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    thumbnail: {
+      type: String,
 
-const courseSchema = new mongoose.Schema({
-  courseid: { type: Number, unique: true },
-  courseName: {
-    type: String,
+      required: false,
+    },
+    category: String,
+    highlights: {
+      type: [String],
+      default: [],
+    },
   },
-  courseDesciption: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  coursePrice: { type: Number, required: true },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    index: true,
-  }, // Called parent referencing.
-  thumbnail: {
-    type: String,
-    required: true,
+);
+
+const courseModuleSchema = new mongoose.Schema(
+  {
+    moduleNo: {
+      type: Number,
+      required: true,
+      default: true, //Wrong give a default incremental
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    courseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+      index: true,
+    },
   },
-  category: String,
-  highlight: {
-    type: [String],
-    required: true,
-    default: [],
+  {
+    timestamps: true,
   },
-});
+);
+
 const courseContentSchema = new mongoose.Schema({
-  moduleNo:{ type:number},
-  title: String,
-  courseid: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: courseSchema,
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  type: {
+    enum: ["VIDEO", "TEXT"],
+  },
+
+  notes: {
+    types: String,
+    required: false,
   },
 });
-
-export const Course = mongoose.model("Course", courseSchema);
-export const CourseContent = mongoose.model(
-  "CourseContent",
+export const courseContent = mongoose.model(
+  "courseContent",
   courseContentSchema,
 );
+export const Course = mongoose.model("Course", courseSchema);
+export const CourseModule = mongoose.model("CourseModule", courseModuleSchema);

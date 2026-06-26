@@ -1,22 +1,21 @@
 import {z} from 'zod'
 
 export const courseCreateValidation = z.object({
-    slug:z.string(),
     courseName: z.string().min(2).max(40),
-    courseDesciption: z.string().min(4).max(50),
+    courseDescription: z.string().min(4).max(500),
     coursePrice: z.number(),
     category: z.string(),
-    highlight: z.array(z.string())
+    highlights: z.array(z.string())
 })
 export const moduleCreateValidation= z.object({
-    moduleTitle:z.string().min(2).max(50),
+    title:z.string().min(2).max(50),
     coursesId:z.string()
 })
 export const CourseContentvalidation = z.object({
     title:z.string(),
     description:z.string(),
     type:z.enum(["VIDEO","TEXT"]),
-    notes:z.string()
+    notes:z.string().optional()
 
 
 })
